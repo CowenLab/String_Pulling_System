@@ -32,7 +32,7 @@
 #define outPinDirection2 10 // 1 if CW, 0 if CCW
 #define outPinFullTic2 11 // Sends a pulse for each full rotation.
 
-#define TTL_DELAY_MS 2 // Duration the TTL is high. Be sure you data acquisition system can handle the delay.
+#define TTL_DELAY_MS 2 // Duration the TTL is high. Be sure you data acquisition system can handle the delay. The rise time for arduino is in the 40ns range. More than 2ms might interrupt other processes in this code.
 #define TICS_PER_SIGNAL 20 // Send a signal every xx Tics. Many acquisition systems have a hard time keeping up with the full tic rate (up to 5000 tics/second) so we only send a signal every xx tics.
 #define TICS_PER_ROTATION 600 // Tics for a full 360degrees rotation.
 
@@ -157,7 +157,9 @@ void loop() {
     Serial.println();
 
   }
-
+  // This is where I would put the asynchronous timer to take the place of delay 
+  // if I ever become concerned about delay choking the processing of rotary encoder input.
+  // e.g. if cumulative_delay1_ms > TTL_DELAY_MS then turn output pin off.
 
 }
 
