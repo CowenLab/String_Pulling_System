@@ -8,9 +8,10 @@
 // The serial out is formatted for a csv file that has the... 
 //    time(ms), direction, tic, full rotation.
 ///////////////////////////////////////////////////////
-// Cowen 2022 and also help from
+// Cowen 2022. Ideas from Gianna Jordan. Ideas from these sites...
 // https://www.instructables.com/Tutorial-of-Rotary-Encoder-With-Arduino/
 // https://www.circuitschools.com/rotary-encoder-with-arduino-in-detail-with-example-codes/
+// 
 ///////////////////////////////////////////////////////
 
 #define encoderPinA 2 // Needs to be the interrupt pin on the Arduino
@@ -19,14 +20,14 @@
 #define outPinDirection 5 // 1 if CW, 0 if CCW
 #define outPinFullTic 6 // Sends a pulse for each full rotation.
 #define TTL_DELAY_MS 2 // Duration the TTL is high. Be sure you data acquisition system can handle the delay.
-#define TICS_PER_SIGNAL 100 // Send a signal every xx Tics. Many acquisition systems have a hard time keeping up with the full tic rate (up to 5000 tics/second) so we only send a signal every xx tics.
+#define TICS_PER_SIGNAL 20 // Send a signal every xx Tics. Many acquisition systems have a hard time keeping up with the full tic rate (up to 5000 tics/second) so we only send a signal every xx tics.
 #define TICS_PER_ROTATION 600 // Tics for a full 360degrees rotation.
 
 long encoderPos = 0;
 int tempEncoderPos = 0;
 int tempEncoderPosFullRot = 0;
-int ticCountCW = 0;
-int ticCountCCW = 0;
+// int ticCountCW = 0;
+// int ticCountCCW = 0;
 
 void setup() {
   Serial.begin(115200); // Be sure your com port is set to receive this. The high rate helps if spinning fast perhaps.
@@ -40,18 +41,18 @@ void setup() {
 }
 
 long lastValRotary;
-int send_signal = 0;
+int send_rotary_signal = 0;
 int send_full_rot_signal = 0;
 unsigned long currentMillis = 0;
 
 void loop() {
   
-  if (send_signal > 0 ) {
+  if (send_rotary_signal > 0 ) {
     currentMillis = millis();
-    send_signal = 0;
-    digitalWrite(outPinTic, HIGH);
+    send_rotary_signal = 0;
+    Serial.print("R,"); // for parsing the file later, this can be used to parse out the rows for the rotary encoder in case this code is added to a larger set of code that has different serial outputs interleaved with this output.
     Serial.print(currentMillis);
-    
+    digitalWrite(outPinTic, HIGH);   
     if (encoderPos > lastValRotary) {
       digitalWrite(outPinDirection, HIGH);
       Serial.print(",1");
@@ -94,7 +95,7 @@ void doEncoder()
     encoderPos++;
     tempEncoderPos++;
     tempEncoderPosFullRot++;
-    //ticCountCW++;
+    //ticCountCW++; // Count contiguous rotations in one direction. This might be useful in the future for identifying jitter from a shaky hand/paw
     //ticCountCCW = 0;
   } else {
     encoderPos--;
@@ -106,7 +107,7 @@ void doEncoder()
 
   if (abs(tempEncoderPos) >= TICS_PER_SIGNAL) {
     tempEncoderPos = 0;
-    send_signal = 1;
+    send_rotary_signal = 1;
   }
 
   if (abs(tempEncoderPosFullRot) >= TICS_PER_ROTATION) {
