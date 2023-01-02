@@ -45,7 +45,7 @@ int tempEncoder2PosFullRot = 0;
 
 void setup() {
   Serial.begin(115200); // Be sure your com port is set to receive this. The high rate helps if spinning fast perhaps.
-  pinMode(encoder1PinA, INPUT_PULLUP);
+  pinMode(encoder1PinA, INPUT_PULLUP); // must be pullup
   pinMode(encoder1PinB, INPUT_PULLUP);
   pinMode(encoder2PinA, INPUT_PULLUP);
   pinMode(encoder2PinB, INPUT_PULLUP);
@@ -66,6 +66,9 @@ void setup() {
   
   attachInterrupt(0, doEncoder1, RISING); // Must be rising
   attachInterrupt(1, doEncoder2, RISING); // Must be rising
+
+  Serial.println("completed setup.");
+
 }
 
 long lastValRotary1 = 0;
@@ -95,6 +98,8 @@ void loop() {
       // This should rarely if ever happen.
       Serial.print(",0");
     }
+    //Serial.print(",LV");
+    //Serial.print(lastValRotary1);
     lastValRotary1 = encoder1Pos;
     
     delay(TTL_DELAY_MS); // A possible alternative would be to do this asynchronously.
@@ -165,6 +170,12 @@ void loop() {
 
 void doEncoder1()
 { // Only runs on rising edge
+
+//   Serial.print("PA");
+//   Serial.print(digitalRead(encoder1PinA));
+// Serial.print("PB");
+ //  Serial.println(digitalRead(encoder1PinB));
+
 
   if (digitalRead(encoder1PinA) != digitalRead(encoder1PinB))
   {
