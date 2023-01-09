@@ -26,10 +26,10 @@
 #define encoder1PinB 4 // Second signal line from encoder
 #define encoder2PinB 5 // Second signal line from encoder
 #define outPinCWTic1 8 // Sends a signal for each CW Tic
-#define outPinCCWTic1 9 // 
-#define outPinFullTic1 10 // Sends a pulse for each full rotation.
-#define outPinCWTic2 11 // Sends a signal for each CW Tic
-#define outPinCCWTic2 12 // 
+#define outPinCCWTic1 9 // CCW
+#define outPinCWTic2 10 // Sends a signal for each CW Tic
+#define outPinCCWTic2 11 // 
+#define outPinFullTic1 12 // Sends a pulse for each full rotation. Might be useful for calibration.
 #define outPinFullTic2 13 // Sends a pulse for each full rotation.
 
 #define TTL_DELAY_MS 2 // Duration the TTL is high. Be sure you data acquisition system can handle the delay. The rise time for arduino is in the 40ns range. More than 2ms might interrupt other processes in this code.
