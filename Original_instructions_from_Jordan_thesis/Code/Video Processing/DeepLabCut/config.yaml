@@ -1,0 +1,52 @@
+    # Project definitions (do not edit)
+Task: Paw Tracking
+scorer: Gianna
+date: Oct14
+multianimalproject:
+
+    # Project path (change when moving around)
+project_path: G:\GitHub\Behavior_Quantification\Code\Video Processing\DeepLabCut
+
+    # Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+
+bodyparts:
+- Nose
+- Left Paw
+- Right Paw
+start: 0
+stop: 1
+numframes2pick: 33
+
+    # Plotting configuration
+skeleton: [[Nose, Left Paw], [Nose, Right Paw]]
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 7
+alphavalue: 0.7
+colormap: jet
+
+    # Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.85
+iteration: 1
+default_net_type: resnet_101
+default_augmenter: default
+snapshotindex: -1
+batch_size: 8
+
+    # Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+croppedtraining:
+    #if cropping is true for analysis, then set the values here:
+x1: 0
+x2: 640
+y1: 277
+y2: 624
+
+    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true
+resnet: 101

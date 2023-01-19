@@ -1,0 +1,13 @@
+% LID, Ketamine, Single-unit (or String pulling)
+% For data collected in room 334 for the R56 Grant
+%  
+DATA_DIR = 'C:\Users\Stephen Cowen\Box Sync\Cowen Laboratory\Data\LID_Ketame_Single_Unit_R56\Rat315\34';
+TFILE_DIR = LK_tfile_dir(DATA_DIR);
+% Load the spikes...
+load(fullfile(TFILE_DIR,'AllSpikes.mat'),'SP')
+% Load the events...
+load(fullfile(DATA_DIR,'EVT.mat'))
+% Load the top down position data...
+load(fullfile(DATA_DIR,'POS.mat'))
+% Load the inertial data...
+load(fullfile(DATA_DIR,'Inertial_data.mat'))
