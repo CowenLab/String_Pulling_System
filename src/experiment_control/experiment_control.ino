@@ -67,12 +67,15 @@ void setup() {
   pinMode(encoder2CCWPin, INPUT); 
   
   pinMode(feederButtonPin, INPUT_PULLUP);
+  pinMode(feeder1Pin, OUTPUT);
 
   digitalWrite(encoder1CWPin, LOW);
   digitalWrite(encoder1CCWPin, LOW);
   digitalWrite(encoder2CWPin, LOW);
   digitalWrite(encoder2CCWPin, LOW);
   
+    digitalWrite(feeder1Pin, HIGH);
+
   //Setup soft serial for MIDI control
   mySerial.begin(31250);
 
@@ -92,7 +95,7 @@ void setup() {
   noteOff(0, NOTE_HELLO, 60);
   delay(50);
 
-  Serial.println("completed setup.");
+  Serial.println("completed exp ctrl setup.");
 }
 
 void loop() {
@@ -198,9 +201,9 @@ void checkButton(){
 }
 
 void activateFeeder(byte feederpin){
-  digitalWrite(feederpin, HIGH);
-  delay(FEEDER_OPEN_TIME_MS);
   digitalWrite(feederpin, LOW);
+  delay(FEEDER_OPEN_TIME_MS);
+  digitalWrite(feederpin, HIGH);
   
   tempEncoder1Pos = 0;
   tempEncoder2Pos = 0;
