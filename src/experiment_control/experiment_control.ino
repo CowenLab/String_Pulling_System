@@ -68,14 +68,20 @@ void setup() {
   
   pinMode(feederButtonPin, INPUT_PULLUP);
   pinMode(feeder1Pin, OUTPUT);
+  pinMode(feeder2Pin, OUTPUT);
 
   digitalWrite(encoder1CWPin, LOW);
   digitalWrite(encoder1CCWPin, LOW);
   digitalWrite(encoder2CWPin, LOW);
   digitalWrite(encoder2CCWPin, LOW);
-  
-    digitalWrite(feeder1Pin, HIGH);
 
+  digitalWrite(feeder1Pin, HIGH);
+  //digitalWrite(feeder1Pin, LOW); for testing
+  digitalWrite(feeder2Pin, HIGH);
+  
+  // activateFeeder(feeder1Pin); // This works fine. Somehow it does not work with the button but does work with the encoder
+
+  
   //Setup soft serial for MIDI control
   mySerial.begin(31250);
 
@@ -95,7 +101,7 @@ void setup() {
   noteOff(0, NOTE_HELLO, 60);
   delay(50);
 
-  Serial.println("completed exp ctrl setup.");
+  Serial.println("completed setup.");
 }
 
 void loop() {
@@ -190,7 +196,7 @@ void checkButton(){
   
       // only toggle the LED if the new button state is HIGH
       if (buttonState == LOW) {
-        // DOO STUFF HERE
+        // DO STUFF HERE
         activateFeeder(feeder1Pin);
         Serial.println("Pressed Button, FEEDING");
       }
@@ -201,7 +207,7 @@ void checkButton(){
 }
 
 void activateFeeder(byte feederpin){
-  digitalWrite(feederpin, LOW);
+  digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.
   delay(FEEDER_OPEN_TIME_MS);
   digitalWrite(feederpin, HIGH);
   
