@@ -12,8 +12,8 @@
 
 #define CW_pin 5 // pin for clockwise movement 
 #define CCW_pin 6 // pin for counter-clockwise movement
-#define laser_pin_string 6 // pin for laser close to the string
-#define laser_pin_feeder 7 // pin for laser close to the feeder
+#define laser_pin_string 18 // pin for laser close to the string
+#define laser_pin_feeder 19 // pin for laser close to the feeder
 
 #define encoder1CWPin 8 // ttl indicating if the encoder was triggered
 #define encoder1CCWPin 9 // 
@@ -25,8 +25,8 @@
 #define feeder1Pin 14 // 
 #define feeder2Pin 15 // 
 
-#define clockPin 18 //
-#define signalPin 19 //
+#define clockPin 2 //
+#define signalPin 4 //
 
 // Defining signals as integers to be used in a switch statement. Currently have 16 available signals
 #define FEEDER_ON           1 //
@@ -82,6 +82,9 @@ bool fed_already = false;
 bool laser1Crossed = true;
 bool laser2Crossed = true;
 
+int lastLaserState1 = HIGH;
+int lastLaserState2 = HIGH;
+
 void setup() {
   //randomRange = 100/randomPercent;
   Serial.begin(115200); // Be sure your com port is set to receive this. The high rate helps if spinning fast perhaps.
@@ -130,6 +133,10 @@ void setup() {
   delay(50);
 
   Serial.println("completed setup.");
+  digitalWrite(signalPin, LOW);
+  digitalWrite(clockPin, LOW);
+  digitalWrite(CCW_pin, LOW);
+  digitalWrite(CW_pin, LOW);
 }
 
 // TODO: Need to add that distance is only increased once laser has been crossed.
@@ -137,12 +144,24 @@ void setup() {
 //        activated? Clear up with Dr.Cowen and Gabe
 void loop() {
    // encoders are only updated if both lazers have been activated. 
+  digitalWrite(clockPin, LOW);
   if (laser1Crossed && laser2Crossed){
     updateEncoders();
-    }
+  }
   checkDistance(); // checks to see if enough distance pulled for reward.
   checkButton();
   checkSensors(); 
+  //laser_on = digitalRead(laser_pin_string);
+  //Serial.println(encoder1Pos);  
+  
+//Serial.print(encoder1CCWPinPrev);  
+//Serial.print(" : ");  
+//Serial.println(digitalRead(encoder1CCWPin));
+  //Serial.print("l on ");
+  //Serial.println(laser_on);
+  //Serial.print("last on ");  
+  //Serial.println(lastLaserState);
+  //loopClock();
 }
 
 
@@ -158,6 +177,8 @@ void updateEncoders(){
       Serial.print(encoder1Pos);
       Serial.print(",");
       Serial.println(tempEncoder1Pos);
+      digitalWrite(CW_pin, HIGH);
+      digitalWrite(CCW_pin, LOW);
   }
   encoder1CWPinPrev = digitalRead(encoder1CWPin);
 
@@ -172,6 +193,8 @@ void updateEncoders(){
       Serial.print(encoder1Pos);
       Serial.print(",");
       Serial.println(tempEncoder1Pos);  
+      digitalWrite(CW_pin, LOW);
+      digitalWrite(CCW_pin, HIGH);
   }
   encoder1CCWPinPrev = digitalRead(encoder1CCWPin);
 
@@ -234,6 +257,7 @@ void checkButton(){
       if (buttonState == LOW) {
         // DO STUFF HERE
         activateFeeder(feeder1Pin);
+        sendSignal(FEEDER_ON);
         Serial.println("Pressed Button, FEEDING");
       }
     }
@@ -242,10 +266,10 @@ void checkButton(){
   
 }
 
-void activateFeeder(byte feeder1pin){
-  digitalWrite(feeder1pin, LOW); // pulls to ground, completing the circuit.
+void activateFeeder(byte feederpin){
+  digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.
   delay(FEEDER_OPEN_TIME_MS);
-  digitalWrite(feeder1pin, HIGH);
+  digitalWrite(feederpin, HIGH);
   
   tempEncoder1Pos = 0;
   tempEncoder2Pos = 0;
@@ -260,7 +284,6 @@ void activateFeeder(byte feeder1pin){
 
   Serial.print("FEED_");
   Serial.println();
-  sendSignal(FEEDER_ON);
 
   // reset pull distance
   laser1Crossed = false;
@@ -292,28 +315,46 @@ void talkMIDI(byte cmd, byte data1, byte data2) {
 }
 
 void checkSensors() {
-  
-  if (laser_check(laser_pin_string, LASER_1_ON, LASER_1_OFF)){
+  //Serial.print("last on ");  
+  //Serial.print(laser_on);  
+  if (laser_check(laser_pin_string, LASER_1_ON, LASER_1_OFF, lastLaserState1)){
     laser1Crossed = true;
     }
-  if (laser_check(laser_pin_feeder, LASER_2_ON, LASER_2_OFF)){
+  if (laser_check(laser_pin_feeder, LASER_2_ON, LASER_2_OFF, lastLaserState2)){
     laser2Crossed = true;
-    }
+  }
 }
 
-bool laser_check(int laser_pin, int laser_on_message, int laser_off_message){
+// Do a toggle instead, only send message on toggle change
+bool laser_check(int laser_pin, int laser_on_message, int laser_off_message, int lastState){
     laser_on = digitalRead(laser_pin);
-  
-    if (laser_on){
-      sendSignal(laser_on_message);
-      while (laser_on){
-        // Here so signal is only sent once while laser is on and not continuously
-        laser_on = digitalRead(laser_pin_string);
+    
+    int crossed = 0;
+    if (laser_on != lastState){
+      if (laser_on ) {
+        sendSignal(laser_on_message);
       }
-      sendSignal(laser_off_message); 
+      else {
+        sendSignal(laser_off_message); 
+      }
+      crossed = 1;
+    }
+    if (laser_pin == 18) {
+      lastLaserState1 = laser_on;  
+      //Serial.println(lastLaserState1);  
+    }
+    else {
+      lastLaserState2 = laser_on;
+      //Serial.println(lastLaserState2);  
+    }
+    lastState = laser_on;
+    if (crossed == 1) {
       return true;
     }
-  }
+    return false;
+    
+}
+
 
 void sendSignal(int message_type){
   int sendingSignal[4] = {0, 0, 0, 0};
@@ -343,22 +384,28 @@ void sendSignal(int message_type){
       sendingSignal[1] = 1;
       sendingSignal[2] = 1;
       sendingSignal[3] = 1; // 0 1 1 1
+      break;
 
   }
 
   // Syncs CLK and SIG
-  for (byte i = 0; i < 3; i = i+1){
+  digitalWrite(clockPin, LOW);
+  digitalWrite(signalPin, LOW);
+  for (int i = 0; i < 4; i++){
+    digitalWrite(clockPin, LOW);
+    digitalWrite(signalPin, LOW);
+    delay(2);
     if (sendingSignal[i] == 1) {
-      digitalWriteFast(signalPin, HIGH);
+      digitalWrite(signalPin, HIGH);
     }
     else{
-      digitalWriteFast(signalPin, LOW);
+      digitalWrite(signalPin, LOW);
     }
-    digitalWriteFast(clockPin, HIGH);
-    delayMicroseconds(35);
-    digitalWriteFast(signalPin, LOW);
-    digitalWriteFast(clockPin, LOW);
-    delayMicroseconds(35);
+    digitalWrite(clockPin, HIGH);
+    delay(2);
   }
-  Serial.println();
+  digitalWrite(clockPin, LOW);
+  digitalWrite(signalPin, LOW);
   }
+
+  
