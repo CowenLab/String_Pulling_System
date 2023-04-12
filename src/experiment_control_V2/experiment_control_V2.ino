@@ -90,6 +90,7 @@ int randomPercent = 20; // 20 for 20%. 50 for 50%.
 long randNumber;
 int randomRange = 100/randomPercent;
 bool randomMode = false; // true if you want to have random mode after a certain amt of times pulled
+int timesPulled = 0;
 int timesPulledThreshold = 10; // the number of times youwant rat to pull string at default amt before doing random distances
 /////////////////////////////////////////////////////////
 
@@ -282,6 +283,10 @@ void activateFeeder(byte feederpin){
   // reset pull distance
   laser1Crossed = false;
   laser2Crossed = false;
+  timesPulled = timesPulled + 1;
+  if (randomMode && timesPulled > timesPulledThreshold){
+    checkRandom(); 
+  }  
 }
 
 void noteOn(byte channel, byte note, byte attack_velocity) {
