@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////
 // Cowen 2022. Tapia 2023.
 ///////////////////////////////////////////////////////
-#define TICS_FOR_REWARD_1 40 // THIS NEEDS TO BE DEFINED BY THE USER!
+int TICS_FOR_REWARD_1 = 40; // THIS NEEDS TO BE DEFINED BY THE USER!
 #define TICS_FOR_REWARD_2 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 #define TICS_PER_FULL_ROT 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 //#define CM_PER_TIC 0.5 // THIS NEEDS TO BE DEFINED BY THE USER!
@@ -75,8 +75,6 @@ byte encoder2CCWPinPrev = 0;
 byte something_happened = 0;
 unsigned long currentMillis = 0;
 
-long randNumber;
-int randomRange;
 bool laser_on;
 bool fed_already = false;
 bool laser1Crossed = true;
@@ -85,8 +83,18 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
+/////////////////////////////////////////////////////////
+int defaultDist = TICS_FOR_REWARD_1;
+int longDist = TICS_FOR_REWARD_1 * 2; // Longer target pull distance for probe trials; set equal to TICS_FOR_REWARD_1
+int randomPercent = 20; // 20 for 20%. 50 for 50%. 
+long randNumber;
+int randomRange = 100/randomPercent;
+bool randomMode = false; // true if you want to have random mode after a certain amt of times pulled
+int timesPulledThreshold = 10; // the number of times youwant rat to pull string at default amt before doing random distances
+/////////////////////////////////////////////////////////
+
+
 void setup() {
-  //randomRange = 100/randomPercent;
   Serial.begin(115200); // Be sure your com port is set to receive this. The high rate helps if spinning fast perhaps.
   pinMode(encoder1CWPin, INPUT); 
   pinMode(encoder1CCWPin, INPUT); 
@@ -139,9 +147,6 @@ void setup() {
   digitalWrite(CW_pin, LOW);
 }
 
-// TODO: Need to add that distance is only increased once laser has been crossed.
-//        Current idea is to start counting distance and then stop counting distance until feeder is
-//        activated? Clear up with Dr.Cowen and Gabe
 void loop() {
    // encoders are only updated if both lazers have been activated. 
   digitalWrite(clockPin, LOW);
@@ -151,19 +156,8 @@ void loop() {
   checkDistance(); // checks to see if enough distance pulled for reward.
   checkButton();
   checkSensors(); 
-  //laser_on = digitalRead(laser_pin_string);
-  //Serial.println(encoder1Pos);  
-  
-//Serial.print(encoder1CCWPinPrev);  
-//Serial.print(" : ");  
-//Serial.println(digitalRead(encoder1CCWPin));
-  //Serial.print("l on ");
-  //Serial.println(laser_on);
-  //Serial.print("last on ");  
-  //Serial.println(lastLaserState);
-  //loopClock();
-}
 
+}
 
 void updateEncoders(){
    if (encoder1CWPinPrev == 0 && digitalRead(encoder1CWPin) == 1){
@@ -290,7 +284,6 @@ void activateFeeder(byte feederpin){
   laser2Crossed = false;
 }
 
-
 void noteOn(byte channel, byte note, byte attack_velocity) {
   talkMIDI( (0x90 | channel), note, attack_velocity);
 }
@@ -355,7 +348,6 @@ bool laser_check(int laser_pin, int laser_on_message, int laser_off_message, int
     
 }
 
-
 void sendSignal(int message_type){
   int sendingSignal[4] = {0, 0, 0, 0};
    switch (message_type) {
@@ -385,8 +377,8 @@ void sendSignal(int message_type){
       sendingSignal[2] = 1;
       sendingSignal[3] = 1; // 0 1 1 1
       break;
-
   }
+
 
   // Syncs CLK and SIG
   digitalWrite(clockPin, LOW);
@@ -406,6 +398,16 @@ void sendSignal(int message_type){
   }
   digitalWrite(clockPin, LOW);
   digitalWrite(signalPin, LOW);
-  }
+}
 
+void checkRandom(){
+  // 1/20 times distance will be 300cm
+  randNumber = random(randomRange);
+  if (randNumber == 0){
+    TICS_FOR_REWARD_1 = longDist; 
+  }
+  else {
+    TICS_FOR_REWARD_1 = defaultDist; 
+    }
+}
   
