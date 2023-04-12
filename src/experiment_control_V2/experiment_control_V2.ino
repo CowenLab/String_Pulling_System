@@ -1,9 +1,24 @@
 ///////////////////////////////////////////////////////
 // Code to control the String Pulling experiment.
-///////////////////////////////////////////////////////
+//
 // Cowen 2022. Tapia 2023.
-///////////////////////////////////////////////////////
-int TICS_FOR_REWARD_1 = 40; // THIS NEEDS TO BE DEFINED BY THE USER!
+//
+// !!!! DEFINE THESE !!!!!!!!!
+/////////////////////////////////////////////////////////
+int defaultDistance_CENTIMETER = 39;
+int longDistance_CENTIMETER = 80;
+/////////////////////////////////////////////////////////
+int defaultDist = defaultDistance_CENTIMETER / 0.985; // 197 = 1 loop; 243 = 250 cm
+int longDist = longDistance_CENTIMETER / 1.03; // Longer target pull distance for probe trials; set equal to TICS_FOR_REWARD_1
+int randomPercent = 50; // 20 for 20%. 50 for 50%. 
+long randNumber;
+int randomRange = 100/randomPercent;
+bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
+int timesPulled = 0;
+int timesPulledThreshold = 3; // the number of times youwant rat to pull string at default amt before doing random distances
+/////////////////////////////////////////////////////////
+
+int TICS_FOR_REWARD_1 = defaultDist; 
 #define TICS_FOR_REWARD_2 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 #define TICS_PER_FULL_ROT 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 //#define CM_PER_TIC 0.5 // THIS NEEDS TO BE DEFINED BY THE USER!
@@ -83,16 +98,7 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
-/////////////////////////////////////////////////////////
-int defaultDist = TICS_FOR_REWARD_1;
-int longDist = TICS_FOR_REWARD_1 * 2; // Longer target pull distance for probe trials; set equal to TICS_FOR_REWARD_1
-int randomPercent = 20; // 20 for 20%. 50 for 50%. 
-long randNumber;
-int randomRange = 100/randomPercent;
-bool randomMode = false; // true if you want to have random mode after a certain amt of times pulled
-int timesPulled = 0;
-int timesPulledThreshold = 10; // the number of times youwant rat to pull string at default amt before doing random distances
-/////////////////////////////////////////////////////////
+
 
 
 void setup() {
@@ -219,11 +225,12 @@ void updateEncoders(){
   encoder2CCWPinPrev = digitalRead(encoder2CCWPin);
  
 }
-
 void checkDistance(){
   if (tempEncoder1Pos >= TICS_FOR_REWARD_1){
       activateFeeder(feeder1Pin);
       sendSignal(FULL_TURN_ENCODER_1);
+      timesPulled = timesPulled + 1;    
+      setNextDistance();
   }
   
   if (tempEncoder2Pos >= TICS_FOR_REWARD_2){
@@ -261,6 +268,17 @@ void checkButton(){
   
 }
 
+void setNextDistance(){
+  // make distance long
+  if (randomMode && timesPulled == timesPulledThreshold){
+    TICS_FOR_REWARD_1 = longDist;
+    timesPulled = -1;    
+  }  
+  else {
+    TICS_FOR_REWARD_1 = defaultDist;
+  }
+}
+
 void activateFeeder(byte feederpin){
   digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.
   delay(FEEDER_OPEN_TIME_MS);
@@ -283,10 +301,6 @@ void activateFeeder(byte feederpin){
   // reset pull distance
   laser1Crossed = false;
   laser2Crossed = false;
-  timesPulled = timesPulled + 1;
-  if (randomMode && timesPulled > timesPulledThreshold){
-    checkRandom(); 
-  }  
 }
 
 void noteOn(byte channel, byte note, byte attack_velocity) {
