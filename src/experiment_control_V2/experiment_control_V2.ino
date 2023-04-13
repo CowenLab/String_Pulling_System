@@ -15,7 +15,7 @@ long randNumber;
 int randomRange = 100/randomPercent;
 bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
 int timesPulled = 0;
-int timesPulledThreshold = 3; // the number of times youwant rat to pull string at default amt before doing random distances
+int timesPulledThreshold = 10000; // the number of times youwant rat to pull string at default amt before doing random distances
 /////////////////////////////////////////////////////////
 
 int TICS_FOR_REWARD_1 = defaultDist; 
