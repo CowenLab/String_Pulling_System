@@ -184,8 +184,8 @@ void updateEncoders(){
   encoder1CWPinPrev = digitalRead(encoder1CWPin);
 
   if (encoder1CCWPinPrev == 0 && digitalRead(encoder1CCWPin) == 1){
-      encoder1Pos--;
-      tempEncoder1Pos = 0;
+      encoder1Pos++;
+      tempEncoder1Pos++;
       tempEncoder2Pos = 0;
       
       Serial.print("E1,");
