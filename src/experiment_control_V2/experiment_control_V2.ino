@@ -233,9 +233,12 @@ void checkDistance(){
       setNextDistance();
   }
   
-  if (tempEncoder2Pos >= TICS_FOR_REWARD_2){
-      activateFeeder(feeder2Pin);
-      sendSignal(FULL_TURN_ENCODER_2);
+  // changed tempEncoder2 to trigger feederPin1 as well. 
+  if (tempEncoder2Pos >= TICS_FOR_REWARD_1){
+      activateFeeder(feeder1Pin);
+      sendSignal(FULL_TURN_ENCODER_1);
+      timesPulled = timesPulled + 1;    
+      setNextDistance();
   }
   
 }
