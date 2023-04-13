@@ -334,9 +334,11 @@ void checkSensors() {
   //Serial.print(laser_on);  
   if (laser_check(laser_pin_string, LASER_1_ON, LASER_1_OFF, lastLaserState1)){
     laser1Crossed = true;
+    Serial.println("Laser 1 crossed");
     }
   if (laser_check(laser_pin_feeder, LASER_2_ON, LASER_2_OFF, lastLaserState2)){
     laser2Crossed = true;
+    Serial.println("Laser 2 crossed");
   }
 }
 
