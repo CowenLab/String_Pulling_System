@@ -1,9 +1,24 @@
 ///////////////////////////////////////////////////////
 // Code to control the String Pulling experiment.
-///////////////////////////////////////////////////////
+//
 // Cowen 2022. Tapia 2023.
-///////////////////////////////////////////////////////
-#define TICS_FOR_REWARD_1 40 // THIS NEEDS TO BE DEFINED BY THE USER!
+//
+// !!!! DEFINE THESE !!!!!!!!!
+/////////////////////////////////////////////////////////
+int defaultDistance_CENTIMETER = 39;
+int longDistance_CENTIMETER = 80;
+/////////////////////////////////////////////////////////
+int defaultDist = defaultDistance_CENTIMETER / 0.985; // 197 = 1 loop; 243 = 250 cm
+int longDist = longDistance_CENTIMETER / 1.03; // Longer target pull distance for probe trials; set equal to TICS_FOR_REWARD_1
+int randomPercent = 50; // 20 for 20%. 50 for 50%. 
+long randNumber;
+int randomRange = 100/randomPercent;
+bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
+int timesPulled = 0;
+int timesPulledThreshold = 10000; // the number of times youwant rat to pull string at default amt before doing random distances
+/////////////////////////////////////////////////////////
+
+int TICS_FOR_REWARD_1 = defaultDist; 
 #define TICS_FOR_REWARD_2 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 #define TICS_PER_FULL_ROT 10 // THIS NEEDS TO BE DEFINED BY THE USER!
 //#define CM_PER_TIC 0.5 // THIS NEEDS TO BE DEFINED BY THE USER!
@@ -12,8 +27,8 @@
 
 #define CW_pin 5 // pin for clockwise movement 
 #define CCW_pin 6 // pin for counter-clockwise movement
-#define laser_pin_string 6 // pin for laser close to the string
-#define laser_pin_feeder 7 // pin for laser close to the feeder
+#define laser_pin_string 18 // pin for laser close to the string
+#define laser_pin_feeder 19 // pin for laser close to the feeder
 
 #define encoder1CWPin 8 // ttl indicating if the encoder was triggered
 #define encoder1CCWPin 9 // 
@@ -25,8 +40,8 @@
 #define feeder1Pin 14 // 
 #define feeder2Pin 15 // 
 
-#define clockPin 18 //
-#define signalPin 19 //
+#define clockPin 2 //
+#define signalPin 4 //
 
 // Defining signals as integers to be used in a switch statement. Currently have 16 available signals
 #define FEEDER_ON           1 //
@@ -75,15 +90,18 @@ byte encoder2CCWPinPrev = 0;
 byte something_happened = 0;
 unsigned long currentMillis = 0;
 
-long randNumber;
-int randomRange;
 bool laser_on;
 bool fed_already = false;
 bool laser1Crossed = true;
 bool laser2Crossed = true;
 
+int lastLaserState1 = HIGH;
+int lastLaserState2 = HIGH;
+
+
+
+
 void setup() {
-  //randomRange = 100/randomPercent;
   Serial.begin(115200); // Be sure your com port is set to receive this. The high rate helps if spinning fast perhaps.
   pinMode(encoder1CWPin, INPUT); 
   pinMode(encoder1CCWPin, INPUT); 
@@ -130,21 +148,23 @@ void setup() {
   delay(50);
 
   Serial.println("completed setup.");
+  digitalWrite(signalPin, LOW);
+  digitalWrite(clockPin, LOW);
+  digitalWrite(CCW_pin, LOW);
+  digitalWrite(CW_pin, LOW);
 }
 
-// TODO: Need to add that distance is only increased once laser has been crossed.
-//        Current idea is to start counting distance and then stop counting distance until feeder is
-//        activated? Clear up with Dr.Cowen and Gabe
 void loop() {
    // encoders are only updated if both lazers have been activated. 
+  digitalWrite(clockPin, LOW);
   if (laser1Crossed && laser2Crossed){
     updateEncoders();
-    }
+  }
   checkDistance(); // checks to see if enough distance pulled for reward.
   checkButton();
   checkSensors(); 
-}
 
+}
 
 void updateEncoders(){
    if (encoder1CWPinPrev == 0 && digitalRead(encoder1CWPin) == 1){
@@ -158,12 +178,14 @@ void updateEncoders(){
       Serial.print(encoder1Pos);
       Serial.print(",");
       Serial.println(tempEncoder1Pos);
+      digitalWrite(CW_pin, HIGH);
+      digitalWrite(CCW_pin, LOW);
   }
   encoder1CWPinPrev = digitalRead(encoder1CWPin);
 
   if (encoder1CCWPinPrev == 0 && digitalRead(encoder1CCWPin) == 1){
-      encoder1Pos--;
-      tempEncoder1Pos = 0;
+      encoder1Pos++;
+      tempEncoder1Pos++;
       tempEncoder2Pos = 0;
       
       Serial.print("E1,");
@@ -172,6 +194,8 @@ void updateEncoders(){
       Serial.print(encoder1Pos);
       Serial.print(",");
       Serial.println(tempEncoder1Pos);  
+      digitalWrite(CW_pin, LOW);
+      digitalWrite(CCW_pin, HIGH);
   }
   encoder1CCWPinPrev = digitalRead(encoder1CCWPin);
 
@@ -201,16 +225,20 @@ void updateEncoders(){
   encoder2CCWPinPrev = digitalRead(encoder2CCWPin);
  
 }
-
 void checkDistance(){
   if (tempEncoder1Pos >= TICS_FOR_REWARD_1){
       activateFeeder(feeder1Pin);
       sendSignal(FULL_TURN_ENCODER_1);
+      timesPulled = timesPulled + 1;    
+      setNextDistance();
   }
   
-  if (tempEncoder2Pos >= TICS_FOR_REWARD_2){
-      activateFeeder(feeder2Pin);
-      sendSignal(FULL_TURN_ENCODER_2);
+  // changed tempEncoder2 to trigger feederPin1 as well. 
+  if (tempEncoder2Pos >= TICS_FOR_REWARD_1){
+      activateFeeder(feeder1Pin);
+      sendSignal(FULL_TURN_ENCODER_1);
+      timesPulled = timesPulled + 1;    
+      setNextDistance();
   }
   
 }
@@ -234,6 +262,7 @@ void checkButton(){
       if (buttonState == LOW) {
         // DO STUFF HERE
         activateFeeder(feeder1Pin);
+        sendSignal(FEEDER_ON);
         Serial.println("Pressed Button, FEEDING");
       }
     }
@@ -242,10 +271,21 @@ void checkButton(){
   
 }
 
-void activateFeeder(byte feeder1pin){
-  digitalWrite(feeder1pin, LOW); // pulls to ground, completing the circuit.
+void setNextDistance(){
+  // make distance long
+  if (randomMode && timesPulled == timesPulledThreshold){
+    TICS_FOR_REWARD_1 = longDist;
+    timesPulled = -1;    
+  }  
+  else {
+    TICS_FOR_REWARD_1 = defaultDist;
+  }
+}
+
+void activateFeeder(byte feederpin){
+  digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.
   delay(FEEDER_OPEN_TIME_MS);
-  digitalWrite(feeder1pin, HIGH);
+  digitalWrite(feederpin, HIGH);
   
   tempEncoder1Pos = 0;
   tempEncoder2Pos = 0;
@@ -260,13 +300,11 @@ void activateFeeder(byte feeder1pin){
 
   Serial.print("FEED_");
   Serial.println();
-  sendSignal(FEEDER_ON);
 
   // reset pull distance
   laser1Crossed = false;
   laser2Crossed = false;
 }
-
 
 void noteOn(byte channel, byte note, byte attack_velocity) {
   talkMIDI( (0x90 | channel), note, attack_velocity);
@@ -292,28 +330,47 @@ void talkMIDI(byte cmd, byte data1, byte data2) {
 }
 
 void checkSensors() {
-  
-  if (laser_check(laser_pin_string, LASER_1_ON, LASER_1_OFF)){
+  //Serial.print("last on ");  
+  //Serial.print(laser_on);  
+  if (laser_check(laser_pin_string, LASER_1_ON, LASER_1_OFF, lastLaserState1)){
     laser1Crossed = true;
+    Serial.println("Laser 1 crossed");
     }
-  if (laser_check(laser_pin_feeder, LASER_2_ON, LASER_2_OFF)){
+  if (laser_check(laser_pin_feeder, LASER_2_ON, LASER_2_OFF, lastLaserState2)){
     laser2Crossed = true;
-    }
+    Serial.println("Laser 2 crossed");
+  }
 }
 
-bool laser_check(int laser_pin, int laser_on_message, int laser_off_message){
+// Do a toggle instead, only send message on toggle change
+bool laser_check(int laser_pin, int laser_on_message, int laser_off_message, int lastState){
     laser_on = digitalRead(laser_pin);
-  
-    if (laser_on){
-      sendSignal(laser_on_message);
-      while (laser_on){
-        // Here so signal is only sent once while laser is on and not continuously
-        laser_on = digitalRead(laser_pin_string);
+    
+    int crossed = 0;
+    if (laser_on != lastState){
+      if (laser_on ) {
+        sendSignal(laser_on_message);
       }
-      sendSignal(laser_off_message); 
+      else {
+        sendSignal(laser_off_message); 
+      }
+      crossed = 1;
+    }
+    if (laser_pin == 18) {
+      lastLaserState1 = laser_on;  
+      //Serial.println(lastLaserState1);  
+    }
+    else {
+      lastLaserState2 = laser_on;
+      //Serial.println(lastLaserState2);  
+    }
+    lastState = laser_on;
+    if (crossed == 1) {
       return true;
     }
-  }
+    return false;
+    
+}
 
 void sendSignal(int message_type){
   int sendingSignal[4] = {0, 0, 0, 0};
@@ -343,22 +400,38 @@ void sendSignal(int message_type){
       sendingSignal[1] = 1;
       sendingSignal[2] = 1;
       sendingSignal[3] = 1; // 0 1 1 1
-
+      break;
   }
+
 
   // Syncs CLK and SIG
-  for (byte i = 0; i < 3; i = i+1){
+  digitalWrite(clockPin, LOW);
+  digitalWrite(signalPin, LOW);
+  for (int i = 0; i < 4; i++){
+    digitalWrite(clockPin, LOW);
+    digitalWrite(signalPin, LOW);
+    delay(2);
     if (sendingSignal[i] == 1) {
-      digitalWriteFast(signalPin, HIGH);
+      digitalWrite(signalPin, HIGH);
     }
     else{
-      digitalWriteFast(signalPin, LOW);
+      digitalWrite(signalPin, LOW);
     }
-    digitalWriteFast(clockPin, HIGH);
-    delayMicroseconds(35);
-    digitalWriteFast(signalPin, LOW);
-    digitalWriteFast(clockPin, LOW);
-    delayMicroseconds(35);
+    digitalWrite(clockPin, HIGH);
+    delay(2);
   }
-  Serial.println();
+  digitalWrite(clockPin, LOW);
+  digitalWrite(signalPin, LOW);
+}
+
+void checkRandom(){
+  // 1/20 times distance will be 300cm
+  randNumber = random(randomRange);
+  if (randNumber == 0){
+    TICS_FOR_REWARD_1 = longDist; 
   }
+  else {
+    TICS_FOR_REWARD_1 = defaultDist; 
+    }
+}
+  
