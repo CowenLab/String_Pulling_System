@@ -5,7 +5,7 @@
 //
 // !!!! DEFINE THESE !!!!!!!!!
 /////////////////////////////////////////////////////////
-int defaultDistance_CENTIMETER = 39;
+int defaultDistance_CENTIMETER = 250;
 int longDistance_CENTIMETER = 80;
 /////////////////////////////////////////////////////////
 int defaultDist = defaultDistance_CENTIMETER / 0.985; // 197 = 1 loop; 243 = 250 cm
@@ -15,7 +15,7 @@ long randNumber;
 int randomRange = 100/randomPercent;
 bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
 int timesPulled = 0;
-int timesPulledThreshold = 10000; // the number of times youwant rat to pull string at default amt before doing random distances
+int timesPulledThreshold = 100; // the number of times youwant rat to pull string at default amt before doing random distances
 /////////////////////////////////////////////////////////
 
 int TICS_FOR_REWARD_1 = defaultDist; 
@@ -129,7 +129,7 @@ void setup() {
   pinMode(signalPin, OUTPUT);
   
   //Setup soft serial for MIDI control
-  mySerial.begin(31250);
+  mySerial.begin(115200);
 
   //Reset the VS1053
   pinMode(resetMIDI, OUTPUT);
