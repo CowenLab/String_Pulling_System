@@ -296,7 +296,14 @@ void setNextDistance(){
   // 0000000000 00100100 01100000 00000011 01010000
   
   if (randomMode && timesPulled == timesPulledThreshold){
-    TICS_FOR_REWARD_1 = randomArray[randomPullsAmt]; 
+    // controls how many values will trigger long distance. In this case 2. 
+    if (randomArray[randomPullsAmt] == 1 || randomArray[randomPullsAmt] == 2) {
+      TICS_FOR_REWARD_1 = longDist;
+    }
+    else {
+      TICS_FOR_REWARD_1 = defaultDist;
+    }
+    // steps array accesser and re-randomizes array when random period is over
     if (randomPullsAmt < randomPeriod) {
       randomPullsAmt++;
     }
