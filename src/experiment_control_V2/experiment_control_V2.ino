@@ -98,7 +98,10 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
-
+const int randomPeriod = 8;
+int randomPullsActivated = 0; // Activates random mode for X amt. EX: X = 2. 010 001 100 001 ...
+int randomPullsAmt = 0; 
+int randomArray[randomPeriod];
 
 
 void setup() {
@@ -152,6 +155,7 @@ void setup() {
   digitalWrite(clockPin, LOW);
   digitalWrite(CCW_pin, LOW);
   digitalWrite(CW_pin, LOW);
+  shuffleArray(randomArray, randomPeriod);  
 }
 
 void loop() {
@@ -225,6 +229,7 @@ void updateEncoders(){
   encoder2CCWPinPrev = digitalRead(encoder2CCWPin);
  
 }
+
 void checkDistance(){
   if (tempEncoder1Pos >= TICS_FOR_REWARD_1){
       activateFeeder(feeder1Pin);
@@ -272,7 +277,9 @@ void checkButton(){
 }
 
 void setNextDistance(){
-  // make distance long
+  // Make distance long after timesPulledThreshold amt.
+  // this will be a pseudo random way. threshold = 3 Ex: 001 001 001 001
+  /*
   if (randomMode && timesPulled == timesPulledThreshold){
     TICS_FOR_REWARD_1 = longDist;
     timesPulled = -1;    
@@ -280,7 +287,42 @@ void setNextDistance(){
   else {
     TICS_FOR_REWARD_1 = defaultDist;
   }
+  */
+
+  // This will be a true random where there will be 10 short pulls followed by
+  // 8 pulls of which 2 will be random longs. User will not be able to predict
+  // which 2 are random pulls. 
+  // Ex:
+  // 0000000000 00100100 01100000 00000011 01010000
+  
+  if (randomMode && timesPulled == timesPulledThreshold){
+    TICS_FOR_REWARD_1 = randomArray[randomPullsAmt]; 
+    if (randomPullsAmt < randomPeriod) {
+      randomPullsAmt++;
+    }
+    if (randomPullsAmt == randomPeriod) {
+      shuffleArray(randomArray, randomPeriod);    
+      randomPullsAmt = 0;
+    } 
+    
+  }  
 }
+
+void shuffleArray(int arr[], int size) {
+  // Initialize array with values 1 to 8
+  for (int i = 0; i < size; i++) {
+    arr[i] = i + 1;
+  }
+
+  // Shuffle the array randomly
+  for (int i = size - 1; i > 0; i--) {
+    int j = random(i + 1);
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+}
+
 
 void activateFeeder(byte feederpin){
   digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.
