@@ -98,7 +98,7 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
-const int randomPeriod = 8;
+const int randomPeriod = 4;
 int randomPullsActivated = 0; // Activates random mode for X amt. EX: X = 2. 010 001 100 001 ...
 int randomPullsAmt = 0; 
 int randomArray[randomPeriod];
@@ -297,7 +297,7 @@ void setNextDistance(){
   
   if (randomMode && timesPulled == timesPulledThreshold){
     // controls how many values will trigger long distance. In this case 2. 
-    if (randomArray[randomPullsAmt] == 1 || randomArray[randomPullsAmt] == 2) {
+    if (randomArray[randomPullsAmt] == 1) {
       TICS_FOR_REWARD_1 = longDist;
     }
     else {
@@ -327,6 +327,20 @@ void shuffleArray(int arr[], int size) {
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
+  }
+
+  // Ensure that the first element is not equal to 1
+  if (arr[0] == 1) {
+    int temp = arr[0];
+    arr[0] = arr[1];
+    arr[1] = temp;
+  }
+
+  // Ensure that the last element is not equal to 1
+  if (arr[size - 1] == 1) {
+    int temp = arr[size - 1];
+    arr[size - 1] = arr[size - 2];
+    arr[size - 2] = temp;
   }
 }
 
