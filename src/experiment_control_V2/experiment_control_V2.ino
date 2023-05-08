@@ -333,6 +333,20 @@ void shuffleArray(int arr[], int size) {
     arr[i] = arr[j];
     arr[j] = temp;
   }
+
+  // Ensure that the first element is not equal to 1
+  if (arr[0] == 1) {
+    int temp = arr[0];
+    arr[0] = arr[1];
+    arr[1] = temp;
+  }
+
+  // Ensure that the last element is not equal to 1
+  if (arr[size - 1] == 1) {
+    int temp = arr[size - 1];
+    arr[size - 1] = arr[size - 2];
+    arr[size - 2] = temp;
+  }
 }
 
 

@@ -205,7 +205,7 @@ void printData(int message_type){
   Serial.println();
   
   }
-
+/*
 192 399 597 789
 207
 198  
@@ -215,3 +215,4 @@ void printData(int message_type){
 4.9 turns for 1 meter
 1 meteer = 971.7 tics = 972
 1.03 cm / tic
+*/
