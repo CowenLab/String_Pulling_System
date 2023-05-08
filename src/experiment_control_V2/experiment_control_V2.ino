@@ -98,7 +98,7 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
-const int randomPeriod = 8;
+const int randomPeriod = 4;
 int randomPullsActivated = 0; // Activates random mode for X amt. EX: X = 2. 010 001 100 001 ...
 int randomPullsAmt = 0; 
 int randomArray[randomPeriod];
