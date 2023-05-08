@@ -5,7 +5,7 @@
 //
 // !!!! DEFINE THESE !!!!!!!!!
 /////////////////////////////////////////////////////////
-int defaultDistance_CENTIMETER = 150;
+int defaultDistance_CENTIMETER = 5;
 int longDistance_CENTIMETER = 20;
 /////////////////////////////////////////////////////////
 int defaultDist = defaultDistance_CENTIMETER / 0.985; // 197 = 1 loop; 243 = 250 cm
@@ -15,7 +15,7 @@ long randNumber;
 int randomRange = 100/randomPercent;
 bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
 int timesPulled = 0;
-int timesPulledThreshold = 1000; // the number of times youwant rat to pull string at default amt before doing random distances
+int timesPulledThreshold = 5; // the number of times youwant rat to pull string at default amt before doing random distances
 /////////////////////////////////////////////////////////
 
 int TICS_FOR_REWARD_1 = defaultDist; 
@@ -302,7 +302,7 @@ void setNextDistance(){
     Serial.print("num: ");
     Serial.println(randomArray[randomPullsAmt]);
     Serial.println("###############");
-    if (randomArray[randomPullsAmt] == 1 || randomArray[randomPullsAmt] == 2) {
+    if (randomArray[randomPullsAmt] == 1) {
       TICS_FOR_REWARD_1 = longDist;
     }
     else {
