@@ -5,8 +5,8 @@
 //
 // !!!! DEFINE THESE !!!!!!!!!
 /////////////////////////////////////////////////////////
-int defaultDistance_CENTIMETER = 250;
-int longDistance_CENTIMETER = 80;
+int defaultDistance_CENTIMETER = 5;
+int longDistance_CENTIMETER = 20;
 /////////////////////////////////////////////////////////
 int defaultDist = defaultDistance_CENTIMETER / 0.985; // 197 = 1 loop; 243 = 250 cm
 int longDist = longDistance_CENTIMETER / 1.03; // Longer target pull distance for probe trials; set equal to TICS_FOR_REWARD_1
@@ -15,7 +15,7 @@ long randNumber;
 int randomRange = 100/randomPercent;
 bool randomMode = true; // true if you want to have random mode after a certain amt of times pulled
 int timesPulled = 0;
-int timesPulledThreshold = 100; // the number of times youwant rat to pull string at default amt before doing random distances
+int timesPulledThreshold = 5; // the number of times youwant rat to pull string at default amt before doing random distances
 /////////////////////////////////////////////////////////
 
 int TICS_FOR_REWARD_1 = defaultDist; 
@@ -98,7 +98,10 @@ bool laser2Crossed = true;
 int lastLaserState1 = HIGH;
 int lastLaserState2 = HIGH;
 
-
+const int randomPeriod = 4;
+int randomPullsActivated = 0; // Activates random mode for X amt. EX: X = 2. 010 001 100 001 ...
+int randomPullsAmt = 0; 
+int randomArray[randomPeriod];
 
 
 void setup() {
@@ -152,6 +155,7 @@ void setup() {
   digitalWrite(clockPin, LOW);
   digitalWrite(CCW_pin, LOW);
   digitalWrite(CW_pin, LOW);
+  shuffleArray(randomArray, randomPeriod);  
 }
 
 void loop() {
@@ -225,6 +229,7 @@ void updateEncoders(){
   encoder2CCWPinPrev = digitalRead(encoder2CCWPin);
  
 }
+
 void checkDistance(){
   if (tempEncoder1Pos >= TICS_FOR_REWARD_1){
       activateFeeder(feeder1Pin);
@@ -272,7 +277,9 @@ void checkButton(){
 }
 
 void setNextDistance(){
-  // make distance long
+  // Make distance long after timesPulledThreshold amt.
+  // this will be a pseudo random way. threshold = 3 Ex: 001 001 001 001
+  /*
   if (randomMode && timesPulled == timesPulledThreshold){
     TICS_FOR_REWARD_1 = longDist;
     timesPulled = -1;    
@@ -280,7 +287,68 @@ void setNextDistance(){
   else {
     TICS_FOR_REWARD_1 = defaultDist;
   }
+  */
+
+  // This will be a true random where there will be 10 short pulls followed by
+  // 8 pulls of which 2 will be random longs. User will not be able to predict
+  // which 2 are random pulls. 
+  // Ex:
+  // 0000000000 00100100 01100000 00000011 01010000
+  if (randomMode && timesPulled >= timesPulledThreshold){
+    // controls how many values will trigger long distance. In this case 2. 
+    Serial.println("###############");
+    Serial.print("index: ");
+    Serial.println(randomPullsAmt);
+    Serial.print("num: ");
+    Serial.println(randomArray[randomPullsAmt]);
+    Serial.println("###############");
+    if (randomArray[randomPullsAmt] == 1) {
+      TICS_FOR_REWARD_1 = longDist;
+    }
+    else {
+      TICS_FOR_REWARD_1 = defaultDist;
+    }
+    // steps array accesser and re-randomizes array when random period is over
+    if (randomPullsAmt < randomPeriod) {
+      randomPullsAmt = randomPullsAmt + 1;
+    }
+    if (randomPullsAmt == randomPeriod) {
+      shuffleArray(randomArray, randomPeriod);    
+      randomPullsAmt = 0;
+    } 
+    
+  }  
 }
+
+void shuffleArray(int arr[], int size) {
+  // Initialize array with values 1 to 8
+  for (int i = 0; i < size; i++) {
+    arr[i] = i + 1;
+  }
+
+  // Shuffle the array randomly
+  for (int i = size - 1; i > 0; i--) {
+    int j = random(i + 1);
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+
+  // Ensure that the first element is not equal to 1
+  if (arr[0] == 1) {
+    int temp = arr[0];
+    arr[0] = arr[1];
+    arr[1] = temp;
+  }
+
+  // Ensure that the last element is not equal to 1
+  if (arr[size - 1] == 1) {
+    int temp = arr[size - 1];
+    arr[size - 1] = arr[size - 2];
+    arr[size - 2] = temp;
+  }
+}
+
 
 void activateFeeder(byte feederpin){
   digitalWrite(feederpin, LOW); // pulls to ground, completing the circuit.

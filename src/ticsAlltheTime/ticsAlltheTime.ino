@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////
 //Values to be set before recording
 #define feed_time 110 // 120 for EXPERIMENT && 10000 for CLEANING ONLY 
-int tardist = 208; //Target Pull Distance (cm)
+int tardist = 250; //Target Pull Distance (cm)
 int probedist = 312; // Longer target pull distance for probe trials
 int randomPercent = 20; // 20 for 20%. 50 for 50%. 
 bool randomMode = false; // true if you want to have random mode after a certain amt of times pulled
@@ -205,7 +205,7 @@ void printData(int message_type){
   Serial.println();
   
   }
-
+/*
 192 399 597 789
 207
 198  
@@ -215,3 +215,4 @@ void printData(int message_type){
 4.9 turns for 1 meter
 1 meteer = 971.7 tics = 972
 1.03 cm / tic
+*/
