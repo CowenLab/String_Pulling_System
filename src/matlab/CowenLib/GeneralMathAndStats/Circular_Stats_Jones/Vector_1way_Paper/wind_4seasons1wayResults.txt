@@ -1,0 +1,236 @@
+
+ONE-WAY ANALYSIS FOR VECTORIAL DATA
+
+
+Wind direction - 4 seasons
+
+Name of input data file: wind_4seasons1way.txt
+
+
+Data array contains 13 Rows and 4 Columns
+
+Data in form of individual azimuths
+Azimuths are in Degrees
+
+
+File opened for output: wind_4seasons1wayResults.txt
+
+
+
+---------------------------------------------------
+
+Estimates of standard parameters for each Category
+
+Category: Wntr          Column 1 
+
+   N = 12 
+   C=sum(cosX) = 0.16388     S=sum(sinX) = -5.1162
+   R-square = 26.203        R = 5.1189 
+   R-bar = 0.4266 
+   Vector mean (Theta-bar, deg.) = 271.8 
+   Concentration (Kappa-hat) = 0.76866 (Small-sample corrected)
+
+Category: Spr           Column 2 
+
+   N = 12 
+   C=sum(cosX) = 1.841     S=sum(sinX) = -1.0739
+   R-square = 4.5427        R = 2.1314 
+   R-bar = 0.1776 
+   Vector mean (Theta-bar, deg.) = 329.7 
+   Concentration (Kappa-hat) = 0.1 (Small-sample corrected)
+
+Category: Sum           Column 3 
+
+   N = 13 
+   C=sum(cosX) = 2.1215     S=sum(sinX) = 3.2351
+   R-square = 14.966        R = 3.8686 
+   R-bar = 0.2976 
+   Vector mean (Theta-bar, deg.) = 56.7 
+   Concentration (Kappa-hat) = 0.37697 (Small-sample corrected)
+
+Category: Fall          Column 4 
+
+   N = 12 
+   C=sum(cosX) = -1.9675     S=sum(sinX) = -2.5088
+   R-square = 10.165        R = 3.1883 
+   R-bar = 0.2657 
+   Vector mean (Theta-bar, deg.) = 231.9 
+   Concentration (Kappa-hat) = 0.24901 (Small-sample corrected)
+
+
+---------------------------------------------------
+
+Estimates of parameters of total combined sample
+
+   N = 49 
+   C=sum(cosX) = 2.1589     S=sum(sinX) = -5.4639
+   R-square = 34.514        R = 5.8749 
+   R-bar = 0.1199 
+   Vector mean (Theta-bar, deg.) = 291.6 
+   Concentration (Kappa-hat) = 0.24154 
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+Assumption: All Kappas (concentrations) are equal, but unknown
+
+   Possible methods require larger Kappa or N
+   Analysis not done - use Bootstrap method
+
+
+---------------------------------------------------
+
+Ho: All q Vector-mean directions are equal
+Assumption: Kappas (concentrations) are unequal and unknown
+
+
+   Heterogeneous method requires all Kappa > 1.7
+   Analysis not done - use von Mises resampling
+
+
+===================================================
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume no distribution for data (non-parametric method)
+
+
+Ho: All q Vector-mean directions are equal
+
+   Method require larger sample size N
+   Analysis not done - use Bootstrap method
+
+   Non-parametric version of heterogenity method
+   Uses M method: Delta ratio = 6.1
+   Under Ho, test distributed as chi-square with  3 d.f.
+   Test statistic = 1.4053
+   Pvalue =  0.704
+   Fail to reject Ho at significance level 0.05
+   Assumes sample sizes N at least 27
+   Ref.: Fisher, 1993, p. 116-117,34
+
+
+
+===================================================
+
+USE RESAMPLING/BOOTSTRAP TO TEST EQUALITY FOR ALL q VECTOR-MEANS
+
+
+Ho: All q Vector-mean directions are equal
+
+   Von Mises distribution with resampling method
+   Under Ho, Resampled test cutoff = 19.53
+   Calculated test statistic = 5.7998
+   Pvalue =  0.450 (approximate)
+   Fail to reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 124-125, 213-214
+
+
+
+Ho: All q Vector-mean directions are equal
+
+   Non-parametric, bootstrap version of heterogeneity method
+   Uses M method: Delta ratio = 6.1
+   Under Ho, Bootstrapped test cutoff = 13.004
+   Calculated test statistic = 1.4053
+   Pvalue =  0.410 (approximate)
+   Fail to reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 115-117, 34-35, 213-214
+
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEANS AND EQUALITY OF ALL q CONCENTRATIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+    AND   All q Kappas (concentrations) are equal 
+
+
+   Method requires larger sample size N
+
+
+===================================================
+
+
+CONFIDENCE INTERVAL ON DIFFERENCE OF TWO VECTOR MEANS
+Assumes data follow Von Mises distribution
+and that both Kappas (concentrations) are equal
+Reference: Mardia & Jupp, 2000, p. 130 - 132
+
+
+   Interval on difference of vector means for identifiers Wntr - Spr 
+   Difference = -57.9 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (153.3, 90.9) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers Wntr - Sum 
+   Difference = -144.9 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (112.1, -41.9) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers Wntr - Fall
+   Difference = 39.9 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-77.2, 157.1) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers Spr  - Sum 
+   Difference = -87.0 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (112.4, 73.6) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers Spr  - Fall
+   Difference = 97.8 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-66.0, 261.7) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers Sum  - Fall
+   Difference = -175.2 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (41.0, -31.3) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q CONCENTRATIONS KAPPA
+Assume data follow Von Mises distribution
+
+Ho: All q Kappa (concentrations) are equal
+
+   Methods require larger Kappa or N
+   Analysis not done - use Randomization/Resampling method
+
+
+===================================================
+
+USE RANDOMIZATION/RESAMPLING TO TEST EQUALITY OF ALL q CONCENTRATIONS (KAPPA)
+
+
+Ho: All q Kappas (concentrations) are equal
+
+   Tangential method with Randomization
+   Under Ho, test cutoff = 2.2401
+   Calculated test statistic = 0.55304
+   Pvalue =  0.524 (approximate)
+   Fail to reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 132, 214-216
+
+

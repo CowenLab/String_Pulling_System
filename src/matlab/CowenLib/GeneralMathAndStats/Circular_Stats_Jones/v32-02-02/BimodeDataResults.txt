@@ -1,0 +1,68 @@
+
+STATISTICAL ANALYSIS FOR VECTORIAL DATA
+
+Cross-beds from Salem Limestone
+
+Name of input data file: BimodeData.txt
+
+Data array contains 9 Rows and 7 Columns
+Column 1 contains Azimuths in Degrees
+Column 2 contains Class Frequencies
+
+File opened for output: BimodeDataResults.txt
+
+
+Sample size: N = 488
+
+---------------------------------------------------
+
+Estimates of standard parameters
+   N = 488 
+   C=sum(cosX) = -27.433     S=sum(sinX) = -46.12
+   R-square = 2879.7        R = 53.662 
+   R-bar = 0.1100 
+   Vector mean (Theta-hat, deg.) = 239.3 
+   Concentration (Kappa-hat) = 0.22127 
+
+
+---------------------------------------------------
+
+Separate two von Mises components from a mixture
+Special three-parameter case
+(Ref: Fisher, 1993, p. 99 - 100)
+
+
+   Estimates of two components: 
+   Mean, Kappa, Proportion
+   58.2, 1.6486, 0.429 
+
+
+---------------------------------------------------
+
+Separate two von Mises components from a mixture
+Estimation of 5 parameters
+(Ref: Fisher, 1993, p. 97; Matlab function lsqnonlin)
+
+   Calculated trigonometric averages
+             Avg Cos       Avg Sin
+     1       -0.056215      -0.094509     
+     2       -0.10299        0.20733     
+     3       -0.0010573      0.023041     
+
+   Initial estimates for iteration: 
+   Kappa1, Mean1, Kappa2, Mean2, Proportion1
+   2, 240.0, 2, 60.0, 0.650 
+
+   Lower bounds on estimates: 
+   0, 0.0, 0, 0.0, 0.050 
+
+   Upper bounds on estimates: 
+   1000, 360.0, 1000, 360.0, 0.950 
+
+
+Function converged to solution in 12 iterations
+
+   Estimates of two components: 
+   Kappa1, Mean1, Kappa2, Mean2, Proportion1
+   1.4842, 238.8, 1.8895, 57.2, 0.620 
+

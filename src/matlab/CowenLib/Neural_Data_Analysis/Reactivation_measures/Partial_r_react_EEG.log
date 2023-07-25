@@ -1,0 +1,36 @@
+function [r] = EV_React_with_EEG(eeg_files,intervals,R_interval_min);
+% Load in the EEG data for each R and make a big R matrix.
+% Compute the avereage R before during and after behavior.
+nfiles = length(eeg_files);
+r_idx = find(triu(ones(nfiles,nfiles))==0); % Must be 0, else you get the diagonal as well as the off diag.
+n_rs = length(r_idx);
+rVals = zeros(size(intervals,1),n_rs)*nan;
+for interval_count = 1:size(intervals,1)
+for fc = 1:nfiles
+end
+end
+
+FieldSelection = [1 0 1 0 0];
+    ExtractHeader  = 1; 
+    ExtractMode = 1;
+    ModeArray   = [ ]; % Get all records.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %[TimeStamps, EventIDs, Nttls, Extras, EventStrings] = Nlx2MatEV( Evt_filename, FieldSelection, ExtractHeader, ExtractMode, ModeArray );
+    [TimeStamps_us, sFreq, header] = Nlx2MatCSC( EEG_filename, FieldSelection, ExtractHeader, ExtractMode, ModeArray );
+    % IMPORTANT: YOU CANNOT TRUST THAT BLOCKS WILL BE OF EQUAL LENGTH. USUALLY THIS IS TRUE, BUT NOT
+    %  ALWAYS, ESPECIALLY IF YOU HAVE RB ERRORS.
+    sFreq       = sFreq(1);
+    usec_per_sample = median(diff(TimeStamps_us))/512;
+    %%%%%%%%%%%%%%%%%%%
+    % Trust but verify.
+    %%%%%%%%%%%%%%%%%%%
+    calced_sFreq = (1/usec_per_sample)* 1e6;
+  
+    
+    
+R = zeros(nfiles,nfiles,length(R_times_usec))*nan;
+% A,B,C
+% Calculate the EV on these 3 matrices.
+O = Partial_r(I); % I is S1, M, S2 vector
+[r, R] = Partial_r_react(A, B, C);
+% 

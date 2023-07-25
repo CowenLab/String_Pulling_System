@@ -1,0 +1,229 @@
+
+ONE-WAY ANALYSIS FOR VECTORIAL DATA
+
+
+Brazil - sedimentary structures
+
+Name of input data file: BrazilSedStx1way.txt
+
+
+Data array contains 17 Rows and 8 Columns
+
+Data in form of count frequencies of azimuth class midpoints
+Azimuths are in column 1 of data file
+Azimuths are in Degrees
+
+
+File opened for output: BrazilSedStxResults.txt
+
+
+
+---------------------------------------------------
+
+Estimates of standard parameters for each Category
+
+Category: L2         Column 1 
+
+   N = 42 
+   C=sum(cosX) = -37.994     S=sum(sinX) = 7.8124
+   R-square = 1504.6        R = 38.789 
+   R-bar = 0.9236 
+   Vector mean (Theta-bar, deg.) = 168.4 
+   Concentration (Kappa-hat) = 6.8276 
+
+Category: L4         Column 2 
+
+   N = 43 
+   C=sum(cosX) = -36.614     S=sum(sinX) = -3.1411
+   R-square = 1350.5        R = 36.749 
+   R-bar = 0.8546 
+   Vector mean (Theta-bar, deg.) = 184.9 
+   Concentration (Kappa-hat) = 3.783 
+
+Category: L7         Column 3 
+
+   N = 59 
+   C=sum(cosX) = -40.145     S=sum(sinX) = 22.36
+   R-square = 2111.6        R = 45.953 
+   R-bar = 0.7789 
+   Vector mean (Theta-bar, deg.) = 150.9 
+   Concentration (Kappa-hat) = 2.6344 
+
+Category: L9         Column 4 
+
+   N = 30 
+   C=sum(cosX) = -23.012     S=sum(sinX) = -12.763
+   R-square = 692.47        R = 26.315 
+   R-bar = 0.8772 
+   Vector mean (Theta-bar, deg.) = 209.0 
+   Concentration (Kappa-hat) = 4.3949 
+
+
+---------------------------------------------------
+
+Estimates of parameters of total combined sample
+
+   N = 174 
+   C=sum(cosX) = -137.77     S=sum(sinX) = 14.268
+   R-square = 19183        R = 138.5 
+   R-bar = 0.7960 
+   Vector mean (Theta-bar, deg.) = 174.1 
+   Concentration (Kappa-hat) = 2.823 
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+Assumption: All Kappas (concentrations) are equal, but unknown
+
+   Kappa > 1 (Rbar > 0.40)
+   Under Ho, test distributed as F with  3,  170 d.f.
+   Test statistic = 20.123
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 135 (7.4.6)
+         Fisher, 1993, p. 126-127
+
+
+   Embedding method for Large Kappas
+   Under Ho, test distributed as F with  3,  170 d.f.
+   Test statistic = 17.194
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 139 (7.4.16)
+         Harrison et al, 1986, p. 135-136
+
+
+
+---------------------------------------------------
+
+Ho: All q Vector-mean directions are equal
+Assumption: Kappas (concentrations) are unequal and unknown
+
+
+   Heterogeneous case - requires large sample size
+   Under Ho, test distributed as chi-square with  3 d.f.
+   Test statistic = 68.26
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 141-142
+         Fisher, 1993, p. 124-125, 117
+
+
+
+===================================================
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume no distribution for data (non-parametric method)
+
+
+Ho: All q Vector-mean directions are equal
+
+   Non-parametric version of heterogenity method
+   Uses M method: Delta ratio = 6.3
+   Under Ho, test distributed as chi-square with  3 d.f.
+   Test statistic = 392.77
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 116-117,34
+
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEANS AND EQUALITY OF ALL q CONCENTRATIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+    AND   All q Kappas (concentrations) are equal 
+
+
+   Small Kappa OK, but needs large sample size
+   Under Ho, test distributed as chi-square with  6 d.f.
+   Test statistic = 31.71
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 138 (7.4.12)
+
+
+
+===================================================
+
+
+CONFIDENCE INTERVAL ON DIFFERENCE OF TWO VECTOR MEANS
+Assumes data follow Von Mises distribution
+and that both Kappas (concentrations) are equal
+Reference: Mardia & Jupp, 2000, p. 130 - 132
+
+
+   Interval on difference of vector means for identifiers L2 - L4
+   Difference = -16.5 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-29.6, -3.4) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers L2 - L7
+   Difference = 17.5 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (3.1, 31.9) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers L2 - L9
+   Difference = -40.6 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-53.9, -27.4) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers L4 - L7
+   Difference = 34.0 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (18.9, 49.2) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers L4 - L9
+   Difference = -24.1 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-39.2, -9.0) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers L7 - L9
+   Difference = -58.1 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-74.3, -42.0) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q CONCENTRATIONS KAPPA
+Assume data follow Von Mises distribution
+
+Ho: All q Kappa (concentrations) are equal
+
+
+   Kappa > 2 (Rbar > 0.70)
+   Under Ho, test distributed as chi-square with  3 d.f.
+   Test statistic = 12.715
+   Pvalue =  0.005
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 140 (7.4.25)
+
+
+   Tangential method
+   Under Ho, test distributed as F with  3,  170 d.f.
+   Test statistic = 7.0862
+   Pvalue =  0.000
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 139 
+         Fisher, 1993, p. 131-132

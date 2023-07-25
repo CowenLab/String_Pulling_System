@@ -1,0 +1,201 @@
+
+ONE-WAY ANALYSIS FOR VECTORIAL DATA
+
+
+X-stratification - Upper Miss. Embayment
+
+Name of input data file: XstratUppMissEmbayment.txt
+
+
+Data array contains 9 Rows and 5 Columns
+
+Data in form of count frequencies of azimuth class midpoints
+Azimuths are in column 1 of data file
+Azimuths are in Degrees
+
+
+File opened for output: XstratUppMissEmbaymentResults.txt
+
+
+
+---------------------------------------------------
+
+Estimates of standard parameters for each Category
+
+Category: R1          Column 1 
+
+   N = 301 
+   C=sum(cosX) = -88.582     S=sum(sinX) = -126.23
+   R-square = 23782        R = 154.21 
+   R-bar = 0.5123 
+   Vector mean (Theta-bar, deg.) = 234.9 
+   Concentration (Kappa-hat) = 1.1986 
+
+Category: R2          Column 2 
+
+   N = 423 
+   C=sum(cosX) = -102.84     S=sum(sinX) = -204.79
+   R-square = 52516        R = 229.16 
+   R-bar = 0.5418 
+   Vector mean (Theta-bar, deg.) = 243.3 
+   Concentration (Kappa-hat) = 1.2968 
+
+Category: R3          Column 3 
+
+   N = 196 
+   C=sum(cosX) = -60.905     S=sum(sinX) = -55.497
+   R-square = 6789.4        R = 82.398 
+   R-bar = 0.4204 
+   Vector mean (Theta-bar, deg.) = 222.3 
+   Concentration (Kappa-hat) = 0.92827 
+
+
+---------------------------------------------------
+
+Estimates of parameters of total combined sample
+
+   N = 920 
+   C=sum(cosX) = -252.32     S=sum(sinX) = -386.53
+   R-square = 2.1307e+005        R = 461.59 
+   R-bar = 0.5017 
+   Vector mean (Theta-bar, deg.) = 236.9 
+   Concentration (Kappa-hat) = 1.1648 
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+Assumption: All Kappas (concentrations) are equal, but unknown
+
+   Kappa > 1 (Rbar > 0.40)
+   Under Ho, test distributed as F with  2,  917 d.f.
+   Test statistic = 5.5406
+   Pvalue =  0.004
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 135 (7.4.6)
+         Fisher, 1993, p. 126-127
+
+
+
+---------------------------------------------------
+
+Ho: All q Vector-mean directions are equal
+Assumption: Kappas (concentrations) are unequal and unknown
+
+
+   Heterogeneous method requires all Kappa > 1.7
+   Analysis not done - use von Mises resampling
+
+
+===================================================
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEAN DIRECTIONS
+Assume no distribution for data (non-parametric method)
+
+
+Ho: All q Vector-mean directions are equal
+
+   Non-parametric version of heterogenity method
+   Uses P method: Delta ratio = 1.6
+   Under Ho, test distributed as chi-square with  2 d.f.
+   Test statistic = 10.579
+   Pvalue =  0.005
+   Reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 116-117,34
+
+
+
+===================================================
+
+USE RESAMPLING/BOOTSTRAP TO TEST EQUALITY FOR ALL q VECTOR-MEANS
+
+
+Ho: All q Vector-mean directions are equal
+
+   Non-parametric, bootstrap version of heterogeneity method
+   Uses P method: Delta ratio = 1.6
+   Under Ho, Bootstrapped test cutoff = 6.6364
+   Calculated test statistic = 10.579
+   Pvalue =  0.011 (approximate)
+   Reject Ho at significance level 0.05
+   Ref.: Fisher, 1993, p. 115-117, 34-35, 213-214
+
+
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q VECTOR-MEANS AND EQUALITY OF ALL q CONCENTRATIONS
+Assume data follow Von Mises distribution
+
+Ho: All q Vector-mean directions are equal
+    AND   All q Kappas (concentrations) are equal 
+
+
+   Small Kappa OK, but needs large sample size
+   Under Ho, test distributed as chi-square with  4 d.f.
+   Test statistic = 12.407
+   Pvalue =  0.015
+   Reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 138 (7.4.12)
+
+
+
+===================================================
+
+
+CONFIDENCE INTERVAL ON DIFFERENCE OF TWO VECTOR MEANS
+Assumes data follow Von Mises distribution
+and that both Kappas (concentrations) are equal
+Reference: Mardia & Jupp, 2000, p. 130 - 132
+
+
+   Interval on difference of vector means for identifiers R1 - R2
+   Difference = -8.4 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-19.8, 3.1) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers R1 - R3
+   Difference = 12.6 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (-2.6, 27.8) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+   Interval on difference of vector means for identifiers R2 - R3
+   Difference = 21.0 degrees 
+   Confidence level = 0.9500
+   Confidence interval: Arc over (7.3, 34.7) degrees
+   Interval defined in clockwise direction,
+      centered on observed difference of vector means
+
+===================================================
+
+
+TEST FOR EQUALITY OF ALL q CONCENTRATIONS KAPPA
+Assume data follow Von Mises distribution
+
+Ho: All q Kappa (concentrations) are equal
+
+
+   1 < Kappa < 2 (0.45 < Rbar < 0.70)
+   Under Ho, test distributed as chi-square with  2 d.f.
+   Test statistic = 5.6426
+   Pvalue =  0.060
+   Fail to reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 140 (7.4.24)
+
+
+   Tangential method
+   Under Ho, test distributed as F with  2,  917 d.f.
+   Test statistic = 1.6117
+   Pvalue =  0.200
+   Fail to reject Ho at significance level 0.05
+   Ref.: Mardia & Jupp, 2000, p. 139 
+         Fisher, 1993, p. 131-132

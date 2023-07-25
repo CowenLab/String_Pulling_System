@@ -1,0 +1,19 @@
+[Thd 9428 CPU 2 5/09/23 14:30:56.568] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10851 -run=mPFC_L5_1 -g=0 -t=0 -prb_fld -ni -prb=0 -xa=0,0,4,0.8,0.5,0 -xia=0,0,4,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 9428 CPU 5 5/09/23 14:30:57.466] 
+[Thd 3288 CPU 2 5/09/23 14:30:57.504] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10851 -run=mPFC_L5_1 -g=0 -t=0 -prb_fld -t_miss_ok -ni -ap -prb=0 -gblcar -chnexcl={0;12,36,84,103,134,160,183,191,205:206,226,240,248,329,340,352} -xd=0,0,384,6,500
+[Thd 3288 CPU 2 5/09/23 14:48:26.061] 
+[Thd 8332 CPU 2 5/09/23 17:12:39.663] Cmdline: CatGT -dir=C:/SGL_DATA/Chronic_Neuropixels/Rat430_Test_2 -run=Chronic_test_Rat430_LongShank_Rec1 -g=0 -t=0 -prb_fld -ni -prb=0 -xa=0,0,1,0.8,0.5,0 -xia=0,0,1,-3,-2,0 -xa=0,0,2,0.8,0.5,0 -xia=0,0,2,-3,-2,0 -xa=0,0,3,0.8,0.5,0 -xia=0,0,3,-3,-2,0 -xa=0,0,4,0.8,0.5,0 -xia=0,0,4,-3,-2,0 -xa=0,0,5,0.8,0.5,0 -xia=0,0,5,-3,-2,0 -xa=0,0,6,0.8,0.5,0 -xia=0,0,6,-3,-2,0 -xa=0,0,7,0.8,0.5,0 -xia=0,0,7,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 8332 CPU 2 5/09/23 17:12:39.935] 
+[Thd 8044 CPU 2 5/09/23 17:12:39.967] Cmdline: CatGT -dir=C:/SGL_DATA/Chronic_Neuropixels/Rat430_Test_2 -run=Chronic_test_Rat430_LongShank_Rec1 -g=0 -t=0 -prb_fld -t_miss_ok -ni -lf -prb=0 -xd=0,0,384,6,500
+[Thd 8044 CPU 2 5/09/23 17:12:58.876] 
+[Thd 7660 CPU 2 5/09/23 17:12:59.019] Cmdline: CatGT -dir=C:/SGL_DATA/Chronic_Neuropixels/Rat430_Test_2 -run=Chronic_test_Rat430_LongShank_Rec1 -g=0 -t=0 -prb_fld -t_miss_ok -ni -ap -prb=0 -gblcar -xd=0,0,384,6,500
+[Thd 7660 CPU 1 5/09/23 17:18:15.283] 
+[Thd 10392 CPU 2 5/22/23 08:16:52.387] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10850 -run=mPFC_L5_part2 -g=0 -t=0 -prb_fld -ni -prb=0 -xa=0,0,1,0.8,0.5,0 -xia=0,0,1,-3,-2,0 -xa=0,0,5,0.8,0.5,0 -xia=0,0,5,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 10392 CPU 4 5/22/23 08:16:52.389] Meta file not found 'C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10850/mPFC_L5_part2_g0/mPFC_L5_part2_g0_t0.nidq.meta'.
+[Thd 10392 CPU 4 5/22/23 08:16:52.389] 
+[Thd 6232 CPU 0 5/22/23 08:18:14.230] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10850 -run=mPFC_L5_part2 -g=1 -t=0 -prb_fld -ni -prb=0 -xa=0,0,1,0.8,0.5,0 -xia=0,0,1,-3,-2,0 -xa=0,0,5,0.8,0.5,0 -xia=0,0,5,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 6232 CPU 2 5/22/23 08:18:14.657] 
+[Thd 12996 CPU 2 5/22/23 13:10:31.270] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10847 -run=mPFC_L5_bank0 -g=0 -t=0 -prb_fld -ni -prb=0 -xa=0,0,1,0.8,0.5,0 -xia=0,0,1,-3,-2,0 -xa=0,0,5,0.8,0.5,0 -xia=0,0,5,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 12996 CPU 4 5/22/23 13:10:31.809] 
+[Thd 11156 CPU 0 5/22/23 13:20:57.077] Cmdline: CatGT -dir=C:/SGL_DATA/vHPC_stim_mPFC_excitability_project/10847 -run=mPFC_L23_bank0 -g=0 -t=0 -prb_fld -ni -prb=0 -xa=0,0,1,0.8,0.5,0 -xia=0,0,1,-3,-2,0 -xa=0,0,5,0.8,0.5,0 -xia=0,0,5,-3,-2,0 -xd=0,0,384,6,500 -inarow=2
+[Thd 11156 CPU 1 5/22/23 13:20:57.921] 

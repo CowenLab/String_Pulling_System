@@ -1,0 +1,37 @@
+#	Neuralynx VisCfg Automatic Configuration file	#
+
+# Set up for the correct buffer sizes for this configuration
+
+	-Select DCDCB
+		-SCRate   25600      	# Spike channel sampling rate in Hz. This must be a multiple of the divisor used for the CSC divisor.
+		-DMA_Bufs 0 64 0x10000	# Setup Acquisition DMA Buffers # Default is 32, changed it to 64 and it might have helped. (Stephen) -- casey recommends the following for the 48 channel tetrode recording. I wonder how this would work for the 144. -DMA_Bufs 0 32 0x10000  -DMA_Bufs 1 32 0x10000 
+
+# Set up the Gain Controls
+
+	-Create GainControl CscGainControls
+		-SetRect 222 768 907 1147
+		-ADGain    2
+		-AmpGain   1000
+		-AmpLowCut 1 
+		-AmpHiCut  3000
+
+	-Create GainControl SpikeGainControls
+		-SetRect 908 768 1594 1147
+		-ADGain    4
+		-AmpGain   2000
+		-AmpLowCut 600 
+		-AmpHiCut  6000 
+
+
+# Set up Enlarged spike display
+	
+	-Create BigSEScControl BigSc
+
+# Create global controls for spike displays
+
+	-Create GlobalControl GlobalSpikeControls
+            -ThreshVal 250
+
+# Set up spike channels
+
+### START OF AUTOMATIC CSC/SPIKE GENERATED FILE

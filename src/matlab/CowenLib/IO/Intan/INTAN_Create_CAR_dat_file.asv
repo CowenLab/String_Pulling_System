@@ -1,0 +1,98 @@
+function INTAN_Create_CAR_dat_file(list_of_dat_files, save_spike_dat_files)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin == 0
+    list_of_dat_files = find_files('amp*.dat');
+end
+if nargin < 1
+    save_spike_dat_files = false;
+end
+samples_to_load = 30000*40; % Estimate based on the typical sampling rate. Should really take a random subsample of the entire session.
+[pth] = fileparts(list_of_dat_files{1});
+car_fname = fullfile(pth,'CAR.dat');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load a sample of each dat file and measure the variance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+D = zeros(length(list_of_dat_files),samples_to_load);
+for iF = 1:length(list_of_dat_files)
+    fp = fopen(list_of_dat_files{iF},'rb');
+    D(iF,:) = fread(fp,samples_to_load,'int16');
+    fclose(fp);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Identify outliers and remove from file list.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+v = var(D');
+tmn = trimmean(D',10);
+mn = mean(D');
+% hist(v)
+% max(v)
+p = prctile(v,[5,90]);
+GIX = v > p(1) & v < p(2);
+good_files = find(GIX);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Aggregate the data from the good files.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fprintf('%d good files',length(good_files))
+for iF = 1:length(good_files)
+    fp = fopen(list_of_dat_files{good_files(iF)},'rb');
+    D = single(fread(fp,'int16'));
+    D = D - tmn(good_files(iF));
+    if iF == 1
+        CAR = D;
+    else
+        CAR = CAR + D;
+    end
+    fclose(fp);
+    fprintf('.')
+end
+CAR = CAR/length(good_files);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Write the CAR file.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fp = fopen(car_fname,'wb');
+fwrite(fp,CAR,'int16');
+fclose(fp);
+disp('Created')
+INFO.list_of_dat_files = list_of_dat_files;
+INFO.good_files = good_files;
+INFO.var = v; INFO.note = 'assume using trimmed mean to subtract baseline from each channel';
+INFO.trimmed_mean = tmn;
+INFO.mean = mn;
+
+save(fullfile(pth,'CAR_params.mat'),'INFO')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% If desired, now filter for spikes and save a new set of dat files for
+% spike sorting. Note: need to be converted to singles and then back to
+% ints given the need to filter.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if save_spike_dat_files
+    rhd_file = dir(fullfile(pwd,'*.rhd'));
+    if isempty(rhd_file)
+        sFreq = 30000; % assume this if no rhd file.
+    else
+        IF = INTAN_Read_RHD_file(fullfile(pwd,rhd_file(1).name));
+        sFreq = IF.frequency_parameters.board_adc_sample_rate;
+    end
+    
+    for iF = 1:length(list_of_dat_files)
+        [pth,name,ext] = fileparts(list_of_dat_files{iF});
+        new_fname = fullfile(pth,[name '_filt_CAR' ext]);
+        fp = fopen(list_of_dat_files{iF},'rb');
+        D = single(fread(fp,'int16'));
+        fclose(fp);
+        INFO.var_before_after(iF,1)= var(D(1:10000:end));
+        D = D - tmn(iF) - CAR;
+        INFO.var_before_after(iF,2)= var(D(1:10000:end));
+        D = Filter_for_spikes(D,sFreq);
+        D = int16(D);
+        fp = fopen(new_fname,'wb');
+        fwrite(fp,D,'int16');
+        fclose(fp);
+        fprintf('x')
+
+    end
+    save(fullfile(pth,'CAR_params.mat'),'INFO')
+
+end

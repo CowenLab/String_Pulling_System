@@ -1,0 +1,190 @@
+function [SP, TS] = Load_All_Spikes_File(fname, cell_quality_or_ID,make_artificial_data)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%function [SP, TS] = Load_All_Spikes_File(fname, cell_quality_or_ID)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load the All_spikes file specified in fname.
+% BUT if requested, add new info like depth and region.
+% assumes a depth histor file in a root directory and a channel translation
+% excel file.
+%
+% IF no arguments are passed in, it assumes that you are in a data
+% directory and that the channel_translation_table is located in a
+% directory above.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% cowen(2009)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin < 3
+    % If this is true, then create an artificial dataset of regularly
+    % spiking neurons - some with random ISIs, some with fixed, but all
+    % with the same mean rate as the original cells.
+    make_artificial_data = false;
+end
+
+if nargin ==1
+     
+    cell_quality_or_ID = [];
+end
+
+if nargin ==0
+        fname = 'tfiles/All_Spikes.mat';
+end
+
+
+if isempty(cell_quality_or_ID)
+    cell_quality_or_ID = 2;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load all spikes.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TS = []; SP = [];
+load(fname)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Determine if this file already has the depth information integrated into
+% the data. If not, load the depth and brain region for each cell.
+% AND resave the All_Spikes file so that it contains this information.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+try
+    SP{1}.BrainRegion;
+catch
+    % THIS SHOULD NOT BE HERE AS IT'S SPECIFIC TO Effort_Reward!!!! All of
+    % the depth/brain region info should be in an ER_ script.
+    disp('Updating the All_Spikes file.')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Load the depth and brain region for each cell.
+    % AND resave the All_Spikes file so that it contains this information.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % ASSUME THE LOCAL TRANSLATION TABLE IS CORRECT.
+    f = find_files('Channel_translation_table*.xls'); %Channel_translation_table_HC_OFC
+    % If there is no local translation table, grab the one at the next highest
+    % level.
+    if isempty(f)
+        f = find_files('../Channel_translation_table*.xls'); %Channel_translation_table_HC_OFC
+    end
+    
+    if length(f) > 1
+        pwd
+        error('Too many channel translation files. Tying to figure out the correct one for today...')
+    end
+    channel_translation_file = f{1};
+    depth_file = 'Electrode_Depth_Monitor.xls';
+    
+    %    [val,tmp,txt]  = xlsread(channel_translation_file,'Sheet1','', 'basic');
+    % warning('OFF','MATLAB:xlsread:Mode')
+    [val,tmp,txt]  = xlsread(channel_translation_file,1,'', 'basic');
+    trod_id = cell2mat(txt(2:end,1));
+    brain_region = txt(2:end,3);
+    drive_IDs = cell2mat(txt(2:end,5));
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Get the presumed date of the recording.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    try
+        d = dir('Events.nev');
+        recording_DateNum = datenum(d.date);
+    catch
+        load Events.mat
+        recording_DateNum = EVT.RecordingDateNum;
+    end
+    
+    for iC = 1:length(SP)
+        % Find the channel for each electrode.
+        txt = strtok(SP{iC}.tfileName,'_');
+        SP{iC}.TrodeNumber = str2double(txt(3:end));
+    end
+    
+    [depth_um] = ER_Depths_for_spikes(depth_file,recording_DateNum);
+    
+    for iC = 1:length(SP)
+        % Find the channel that corresponds to this.
+        ix = find(trod_id == SP{iC}.TrodeNumber);
+        % SP{iC}.RecordingDate = d.date;
+        
+        SP{iC}.Drive_ID = drive_IDs(ix);
+        SP{iC}.Depth_uM = depth_um(SP{iC}.Drive_ID);
+        % Correct the region depending on the recorded depth.
+        switch brain_region{ix}
+            case 'ACC'
+                if  SP{iC}.Depth_uM > 2500
+                    SP{iC}.BrainRegion = 'PL';
+                elseif  SP{iC}.Depth_uM < 900
+                    SP{iC}.BrainRegion = 'PrCm';
+                else
+                    SP{iC}.BrainRegion = 'ACC';
+                end
+            case 'OFC'
+                if  SP{iC}.Depth_uM < 3500
+                    SP{iC}.BrainRegion = 'M1';
+                else
+                    SP{iC}.BrainRegion = 'OFC';
+                end
+            otherwise
+                SP{iC}.BrainRegion = brain_region{ix};
+        end
+        
+    end
+    % Resave the All Spikes file.
+    INFO.mfilename = mfilename;
+    INFO.notes = 'Added depth info from the depth_history and channel_assignments.xls files';
+    save(fname,'TS','SP','INFO')
+    
+end
+% If there is no Cell ID information, then append it tpo the data.
+try
+    SP{1}.CID;
+catch
+    % Append the CID information to the spike file.
+    [SP,TS] = ER_Add_CIDs_to_Allspikes; % Saves the .mat file as well.
+end
+
+% FILTER THE OUTPUT BY CELL QUALITY!
+
+goodix = [];
+if cell_quality_or_ID(1) > 100000
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Specific cells were requested.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    for ii = 1:length(SP)
+        if ismember(SP{ii}.CID,cell_quality_or_ID)
+            goodix = [goodix; ii];
+        end
+    end
+else
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Restrict to quality of 2 or higher.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    for ii = 1:length(SP)
+        if SP{ii}.SubjectiveClusterQuality >= cell_quality_or_ID
+            goodix = [goodix; ii];
+        end
+    end
+end
+
+SP = SP(goodix);
+TS = TS(goodix);
+
+if make_artificial_data
+    % Output ARTIFICIAL DATA TO TEST ASSUMTIONS. These data are random but
+    % with the same spiking characteristics as the original cells- just
+    % with shuffled ISIs, regular spiking intervals, or random intervals.
+    disp('WARNING: USING ARTIFICIAL SPIKE TRAINS!!!')
+    
+    random_type = 'shuffle';
+    
+    for ii = 1:length(SP)
+        switch random_type
+            case 'shuffle'
+                % This preserves the ISI perfectly.
+                d = diff(SP{ii}.SpikeTimes);
+                d = [0; d(randperm(length(d)))];
+                st = SP{ii}.SpikeTimes(1) + cumsum(d);
+            case 'fixed_isi'
+                % A fixed interspike interval
+                mdd = mean(diff(SP{ii}.SpikeTimes));
+                d = repmat(mdd, length(SP{ii}.SpikeTimes),1);
+                st = SP{ii}.SpikeTimes(1) + cumsum(d);
+        end
+        SP{ii}.SpikeTimes = st;
+        TS{ii} = st;
+        
+    end
+end

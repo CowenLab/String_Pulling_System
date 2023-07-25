@@ -1,0 +1,16 @@
+Wind direction at Gorleston, England, by seasons 
+Mardia, 1972, p.164 - azimuths observed on Sundays
+Winter  Spring  Summer  Fall
+ 50        0     10      30
+120       20     10      70
+190       40     20     110
+210       60     20     170
+220      160     30     180
+250      170     30     190
+260      200     40     240
+290      220    150     250
+290      270    150     260
+320      290    150     260
+320      340    170     290
+340      350    190     350
+-99      -99    290     -99

@@ -1,0 +1,12 @@
+Cret. X-strat, Upper Mississippi Embayment - 3 regions,R
+W. A. Pryor - 1960 Bull.AAPG - count-freq data
+Azim   R1   R2   R3  Total
+20      5    6    3    14
+60     14    9   14    37
+100     7   10   12    29
+140    17   30   15    62
+180    52   55   33   140
+220    82  104   50   236
+260    61  107   38   206
+300    45   70   19   134
+340    18   32   12    62

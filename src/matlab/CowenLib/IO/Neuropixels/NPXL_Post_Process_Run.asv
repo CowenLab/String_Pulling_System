@@ -1,0 +1,31 @@
+% NPXL_Post_Process_Run
+%
+% The high-level code for running all of the post processing.
+% Feel free to copy this and make a version for your own data
+% post-processing.
+%
+% Expects:
+% C:\CatGT-win
+% C:\TPrime-win
+% Assumes CowenLib
+% Assumes in your GitHub folder: https://github.com/djoshea/neuropixel-utils
+% You must run kilosort manually throught the GUI.
+% You must run NPXL_ or Tprime after spike sort
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Cowen 2022
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clearvars; close all; fclose all;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Change variables here for your analysis.
+
+% PRM_ROOT_DATA_DIR = 'G:\Data\Transcranial_Optogenetics\Mouse5\1\mouse_bank0_run3_g0'
+% PRM_BAD_CHANNEL0_LIST = [1 41 163 191 233 266 279 285 292 355 372 376]; % This is ZERO based as you would see in SpikeGLX so be sure the first channel is zero.
+PRM_ROOT_DATA_DIR = 'G:\Data\Transcranial_Optogenetics\Mouse5\1\mouse_bank0_run2_g0';
+PRM_BAD_CHANNEL0_LIST = [1 41 137 191 256 266 279 280 285 372 376]; % This is ZERO based as you would see in SpikeGLX so be sure the first channel is zero.
+PRM_TEMP_FOLDER_LOCATION = 'D:\Temp\SpikeSorting'; % This needs to be a SSD.
+% PRM_TPRIME_DIR = 'C:\TPrime-win';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Run it.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NPXL_Post_Process('PRM_ROOT_DATA_DIR',PRM_ROOT_DATA_DIR,'PRM_BAD_CHANNEL0_LIST',PRM_BAD_CHANNEL0_LIST,'PRM_TEMP_FOLDER_LOCATION',PRM_TEMP_FOLDER_LOCATION)

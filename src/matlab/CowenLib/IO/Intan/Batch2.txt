@@ -1,0 +1,50 @@
+%% Batch processing command file:
+%%
+%% Keywords start with a double dash and are not case sensitive: --Keyword
+%%
+%% Comments start with a % character and are ignored till end of line
+%% Each line starts exactly with one keyword and a list of values (if any)
+%%
+%% ADR 30 Aug 2002 fixed capitalization issues which affect unix
+%% COWEN VERSION 2008
+
+
+%% Filenames and Directories
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+--BeginGlobals
+  --ProcessingDirectory        .      
+  --FeatureDataDir 	       FD
+  --FindFilesSearchString      *.ntt			% batch process all files matching this search string
+            
+  --ClusterAlgorithm		KlustaKwik		% use BBClust or KlustaKwik
+  --ExitMatlabUponCompletion	0	   % exits matlab when completed, thus freeing up a license.
+  --LogoutUponCompletion	0		    % Logs the current user off after completion. Allows others to use the BBClust Machine (Forces you to be nice!)
+  --LoadingEngine		LoadTT_NeuralynxNT	% replace with your LoadingEngine
+
+  --UseFeatures				   energy peak peakValleyRatio
+  --ExtraFeatures		       valley stdPC1 stdPC2 %spikeWidth width is essentially useless given the noise.
+								% peakValleyRatio looks real good. May be better than point 8
+  %--RemoveFromBatchList    	r01i_01_0.Ntt  r01j_01_0.Ntt  r01k_01_1.Ntt  r01n_01_0.Ntt  	% blank separated list of filename.ext to be excluded
+  %--RemoveFromBatchList    	r01i_01_1.Ntt  r01k_01_0.Ntt  r01l_01_0.Ntt     	% blank separated list of filename.ext to be excluded
+  %--AddToBatchList   	    	Sc7.ntt Sc8.ntt Sc9.ntt Sc10.ntt Sc11.ntt Sc12.ntt    	% blank separated list of filename.ext to be included
+--EndGlobals
+
+--BeginDefaults                            	% defaults for all N-trode files unless overridden 
+  --ChannelValidity           1 1 1 1      	% 4 values: 1 for valid, 0 for invalid channels
+  --SubSampleToNSpikes        4000000   	    % approx number of spikes to which files will be subsampled 
+  --KKwik_MinClusters 	      12
+  --KKwik_MaxClusters         34
+  --KKwik_MaxPossibleClusters         38
+  --KKwik_SubsampleFeatureFile        420000  % Create a KKwik .fet file using a subsample of the original points. Leave the .fd file untouched (unlike SubSampleToNSpikes which subsamples the .fd files)
+
+--EndDefaults
+
+%--File  r01i_01_0.Ntt              %  override defaults for individual files
+%    --ChannelValidity         1 1 1 1  
+%    --KKwik_MinClusters       12
+%    --KKwik_MaxClusters       22
+%
+%--File  r01i_01_1.Ntt                         %  override defaults for individual files
+%    --ChannelValidity         1 1 1 1  
+%    --KKwik_MinClusters       19
+%    --KKwik_MaxClusters       31

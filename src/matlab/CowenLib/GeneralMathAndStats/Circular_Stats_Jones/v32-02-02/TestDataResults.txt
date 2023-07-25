@@ -1,0 +1,150 @@
+
+STATISTICAL ANALYSIS FOR VECTORIAL DATA
+
+TestData.txt - Bulgoo Fm Xbeds
+
+Name of input data file: TestData.txt
+
+Data array contains 30 Rows and 2 Columns
+Column 1 contains Azimuths in Degrees
+
+File opened for output: TestDataResults.txt
+
+
+Sample size: N = 30
+
+---------------------------------------------------
+
+Estimates of standard parameters
+   N = 30 
+   C=sum(cosX) = -8.9504     S=sum(sinX) = -21.713
+   R-square = 551.59        R = 23.486 
+   R-bar = 0.7829 
+   Vector mean (Theta-hat, deg.) = 247.6 
+   Concentration (Kappa-hat) = 2.676 
+
+
+---------------------------------------------------
+
+Controls used to generate rose diagrams
+
+   Number of classes = 12
+   Width of classes (degr.) = 30.0
+   Origin of azimuths used for classes = 0.0
+   Plot frequency for each class
+
+
+-------------------------------------------------
+
+Rayleigh tests of hypothesis
+Ho: Data are from uniform distribution
+Alt.: Data are from unimodal distribution
+
+
+Assume vector-mean unknown
+(Ref.: Mardia and Jupp, 2000, p. 94-98)
+     Calculated Sstar test statistic = 41.79
+     Significance level (alfa) = 0.050
+     Test cutoff = 5.991
+     Reject uniformity hypothesis
+     P-value = 0.0000
+
+Assume vector-mean known = 200.0
+(Ref.: Mardia and Jupp, 2000, p. 98-99)
+     Calculated Cbar test statistic = 0.5278
+     Significance level (alfa) = 0.050
+     Test cutoff = 0.21
+     Reject uniformity hypothesis
+     Asymptotic P-value = 0.0000
+
+
+
+-------------------------------------------------
+
+Test of hypothesis 
+Ho: Data are from uniform distribution
+Alt.: Data are from general distribution
+
+U-squared test using CDF of uniform distribution
+(Refs.: Watson, 1961, Biometrika, p 113 (26)
+        Mardia and Jupp, 2000, p. 104)
+     Calculated Ustar2 test statistic = 1.021
+     Significance level (alfa) = 0.050
+     Test cutoff = 0.187
+     Reject uniformity hypothesis
+
+-------------------------------------------------
+
+Tests of hypothesis 
+Ho: Data are from von Mises distribution
+
+U-squared tests using CDF of von Mises distribution
+
+Assumes Theta known (200.0) and Kappa known (1)
+(Refs.: Watson, 1961, Biometrika, p 113 (26)
+        Fisher, 1993, p. 84-85)
+     Calculated Ustar2 test statistic = 0.5899
+     Significance level (alfa) = 0.050
+     Test cutoff = 0.187
+     Reject von Mises hypothesis
+
+Assumes both Theta and Kappa unknown
+(Refs.: Watson, 1961, Biometrika, p 113 (26)
+        Fisher, 1993, p. 84-85)
+     Calculated U2 test statistic = 0.02362
+     Significance level (alfa) = 0.050
+     Test cutoff = 0.1071
+     Cannot reject von Mises hypothesis
+
+---------------------------------------------------
+
+Test of hypothesis: Vector Mean = 200.0
+Concentration (Kappa) assumed known = 1
+Assumes von Mises distribution
+(Ref.: Mardia and Jupp, 2000, p. 120)
+
+     Test for "moderate" N and Kappa < 2
+     Calculated test statistic = 15.31
+     Significance level (alfa) = 0.05
+     Test cutoff = 3.841
+     Reject hypothesized vector mean direction
+     Approx. P-value = 0.0001
+
+
+---------------------------------------------------
+
+Test of hypothesis: Vector Mean = 200.0
+Concentration parameter (Kappa) unknown
+Assumes von Mises distribution
+(Ref.: Mardia and Jupp, 2000, p. 122 (7.2.15, 16))
+
+     Calculated test statistic = 23.31
+     Significance level (alfa) = 0.05
+     Test cutoff = 3.841
+     Reject hypothesized vector mean direction
+     P-value = 0.0000
+
+
+---------------------------------------------------
+
+Confidence interval on Vector Mean (Theta)
+Assumes von Mises distribution
+(Ref.: Mardia and Jupp, 2000, p. 124 (7.2.27, 28))
+     Estimated Vector Mean = 247.6
+     95 pct. confidence interval: (230.52, 264.69)
+
+Confidence interval on Vector Mean (Theta)
+   using bootstrap resampling
+No von Mises distribution assumption
+(Ref.: Fisher, 1993, p. 75, 199 - 211)
+     Estimated Vector Mean = 247.6
+     95 pct. confidence interval: (227.62, 267.55)
+
+---------------------------------------------------
+
+Confidence interval on Concentration (Kappa)
+Assumes von Mises distribution
+R-bar > 0.70 (KappaHat > 2)
+(Ref.: Mardia and Jupp, 2000, p. 126-127 (7.2.38))
+     Estimated Kappa = 2.676
+     95 pct. confidence interval: (1.533, 3.851)

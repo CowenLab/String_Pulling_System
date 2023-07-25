@@ -1,0 +1,52 @@
+function [cc pp]= partialcorr_cowen(M,P);
+% this was just a filler function to mimic the matlab 7.1 function
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GIX = ~isnan(sum(M,2));
+if size(M,1)-sum(GIX) > size(M,1)/3
+    disp('corrcoef_cowen: A TON OF BAD RECORDS- REVISIT YOUR CRAPPY DATA')
+end
+if sum(GIX) < 7
+    disp(['Only ' num2str(sum(GIX)) ' datapoints. Returning nan.'])
+    cc = nan; % Don't even bother - it will be invalid anyway.
+    return
+end
+[cc pp] = partialcorr(M(GIX,:),P(GIX,:));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% If the user just wants a correlation between two variables, they don't
+% want a square matrix.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if size(M,2) == 2
+    if size(cc,1) > 1
+        cc = cc(2);
+        pp = pp(2);
+    else 
+        cc = nan;
+        pp = nan;
+    end
+end
+
+
+
+
+
+
+
+
+
+
+v = version;
+if str2num(v(1:3))>=7.1
+    [R pval] = partialcorr(M,P);
+end
+
+disp('USING COWEN PARTIALCORR')
+if size(P,2) > 1
+    P = P(:,1);
+    disp('IGNORING EXTRA COLUMNS IN P. THIS IS A HACK.')
+end
+O = Partial_r([M P]);
+R = ones(2);
+pval = zeros(2)*nan; % I don't know how to calculate the pval.
+R(2) = O(1);
+R(3) = O(1);
