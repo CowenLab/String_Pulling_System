@@ -19,7 +19,7 @@ load(event_file,'EVT')
 [POS, POS_info] = INTAN_Sync_DeepLabCut_csv_to_Intan(dlc_csv_file, EVT.front_camera_frame_uS(:,1), 'Front_Camera');
 
 % Add more informaiton to the DeepLabCut data such as phase of the pull. Clean up bad data as well.
-[SEG, INFO] = SPG_Load_and_Clean_DLC_Front_Camera_Tracking(POS);
+[SEG] = SPG_Load_and_Clean_DLC_Front_Camera_Tracking(POS);
 
 % Generate some plots now that the data has been processed.
 SPG_plot_segmented_paw_position(SEG);

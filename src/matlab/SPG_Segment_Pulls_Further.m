@@ -17,7 +17,7 @@ OUT.SES = SES;
 
 % Once working, we can integrate this into the
 % SPG_Load_and_Clean_DLC_Front_Camera_Tracking function.
-[FCam, FCam_intervals] = SPG_Load_and_Clean_DLC_Front_Camera_Tracking(fullfile(SES.Front_cam_dir,'Front_Cam_Pos.mat'));
+[FCam] = SPG_Load_and_Clean_DLC_Front_Camera_Tracking(fullfile(SES.Front_cam_dir,'Front_Cam_Pos.mat'));
 
 eventNames=fieldnames(EVENTS);
 

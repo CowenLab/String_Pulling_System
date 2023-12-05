@@ -23,8 +23,12 @@ min_max_th = [50 800];
 bandpass_for_each_paw = [1.1 12]; % if < 1 some datasets don't work well
 duration_of_a_good_bout_sec = 1; % if less than this, define it as too brief for proper analysis.
 interp_meth = 'linear';
+VALIDATE_BASED_ON_COWEN_DATASET = false; % only works sadly for the cowen dataset.
+
 Extract_varargin;
 POS = []; INFO = [];
+
+
 GP = SPG_Globals; % parameters for the string pulling data.
 
 if ischar(fname)
@@ -255,34 +259,35 @@ if 0
 end
 
 % VALIDATION AND ALIGNMENT ACROSS SESSIONS
-%
+% ONLY FOR COWEN dataset (sadly)
 % attempt to align the phases so that they are consistent between sessions
 % and rats. For some reason, everything aligns
-load(fullfile(Git_dir,'String_Pull_312A','Pull_phase_alignment.mat'),'ALIGN')
+if VALIDATE_BASED_ON_COWEN_DATASET % do not run this by default.
+    load(fullfile(Git_dir,'String_Pull_312A','Pull_phase_alignment.mat'),'ALIGN')
 
-GIX = POS.good_pull_periods_all;
-for ii = 1:(length(ALIGN.phase_intervals_rad )-1)
-    IX = GIX & POS.Left_Paw_phase > ALIGN.phase_intervals_rad (ii) &  POS.Left_Paw_phase <= ALIGN.phase_intervals_rad (ii+1) ;
-    left_paw_speed(ii) = median(POS.Left_Paw_speed(IX),'omitnan');
-    IX = GIX & POS.Right_Paw_phase > ALIGN.phase_intervals_rad (ii) &  POS.Right_Paw_phase <= ALIGN.phase_intervals_rad (ii+1) ;
-    right_paw_speed(ii) = median(POS.Right_Paw_speed(IX),'omitnan');
+    GIX = POS.good_pull_periods_all;
+    for ii = 1:(length(ALIGN.phase_intervals_rad )-1)
+        IX = GIX & POS.Left_Paw_phase > ALIGN.phase_intervals_rad (ii) &  POS.Left_Paw_phase <= ALIGN.phase_intervals_rad (ii+1) ;
+        left_paw_speed(ii) = median(POS.Left_Paw_speed(IX),'omitnan');
+        IX = GIX & POS.Right_Paw_phase > ALIGN.phase_intervals_rad (ii) &  POS.Right_Paw_phase <= ALIGN.phase_intervals_rad (ii+1) ;
+        right_paw_speed(ii) = median(POS.Right_Paw_speed(IX),'omitnan');
+    end
+    % do the cross corr...
+    % [xc,lags] = xcorr(left_paw_speed,ALIGN.left_paw_speed);
+    BIX = isnan(right_paw_speed) | isnan(ALIGN.right_paw_speed);
+    if any(BIX)
+        disp('found nans in paw speed')
+    end
+    [xc,lags] = xcorr(right_paw_speed(~BIX),ALIGN.right_paw_speed(~BIX));
+    [~,ix] = max(xc);
+    %     NOTE: I did this and ony one small shift off between sessions and
+    %     rats in some sets in 348 and 349. Not worth adjusting. - only one lag
+    %     off.
+    INFO.xcorr_align_reach_phase_shift = lags(ix);
+    INFO.xcorr = xc;
+    INFO.xcorr_lags = lags;
+    INFO.xcorr_phase_intervals_rad = ALIGN.phase_intervals_rad;
 end
-% do the cross corr...
-% [xc,lags] = xcorr(left_paw_speed,ALIGN.left_paw_speed);
-BIX = isnan(right_paw_speed) | isnan(ALIGN.right_paw_speed);
-if any(BIX)
-    disp('found nans in paw speed')
-end
-[xc,lags] = xcorr(right_paw_speed(~BIX),ALIGN.right_paw_speed(~BIX));
-[~,ix] = max(xc);
-%     NOTE: I did this and ony one small shift off between sessions and
-%     rats in some sets in 348 and 349. Not worth adjusting. - only one lag
-%     off.
-INFO.xcorr_align_reach_phase_shift = lags(ix);
-INFO.xcorr = xc;
-INFO.xcorr_lags = lags;
-INFO.xcorr_phase_intervals_rad = ALIGN.phase_intervals_rad;
-
 % From these data, we can further process to get other parameters such as
 % detailed paw phase, acceleration, etc.
 % this effectively adds some new columns to the master table.
