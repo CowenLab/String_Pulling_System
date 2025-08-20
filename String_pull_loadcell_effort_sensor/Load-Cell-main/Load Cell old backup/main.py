@@ -1,5 +1,3 @@
-# Cowen and Audrey edited to allow an output PWM signal indicating effort. 2025
-
 from hx711.hx711_pio import HX711
 from machine import Pin
 import math
@@ -14,10 +12,6 @@ startTimeMs = time.ticks_ms()
 
 # Assign chip select (CS) pin (and start it high)
 cs = machine.Pin(13, machine.Pin.OUT)
-
-# PWM pin - put code for defining PWM pin here. Don't trust my code.
-pwm_pin = machine.Pin(9, machine.Pin.OUT)
-
 
 # Intialize SPI peripheral (start with 1 MHz)
 spi = machine.SPI(1,
@@ -191,8 +185,7 @@ def main():
             ### Format and Print ###
             value = math.floor(value*100000)/100000
             print('{},{}{}'.format(timeMs, value, unit))
-            # PWM OUTPUT: put the code here that will alter the pulse width to indicate load cell output.
-
+        
             
             ### Write to File if recording  ###
             if (isRecording == True and isSDconnected):
