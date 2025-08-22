@@ -2,6 +2,7 @@
 
 from hx711.hx711_pio import HX711
 from machine import Pin
+from machine import PWM
 import math
 import time
 import utime
@@ -17,6 +18,7 @@ cs = machine.Pin(13, machine.Pin.OUT)
 
 # PWM pin - put code for defining PWM pin here. Don't trust my code.
 pwm_pin = machine.Pin(9, machine.Pin.OUT)
+pwm_obj = PWM(pwm_pin, 10)
 
 
 # Intialize SPI peripheral (start with 1 MHz)
@@ -63,7 +65,6 @@ value = 0
 # Record Button Variables
 isRecording = False
 fileCnt = 0
-fileName = "/sd/" + str(datetime) + "/" + str(fileCnt)
 file = None
 
 
@@ -73,6 +74,9 @@ current_time = utime.localtime()
 #Format the current time as "dd/mm/yyyy HH:MM"
 datetime = "{}-{:02d}-{:02d}_{:02d}-{:02d}-{:02d}".format(current_time[0], current_time[1], current_time[2], current_time[3], current_time[4], current_time[5])
 print(datetime)
+fileName = "/sd/" + str(datetime) + "/" + str(fileCnt)
+
+
 
     
 def toggleRec():
@@ -106,7 +110,7 @@ def toggleRec():
 
 def main():
     unit = 'g'
-    isAcquiring = False
+    isAcquiring = True
     
     # Load Cell Local Variables
     tareVal = 0
@@ -190,9 +194,14 @@ def main():
             
             ### Format and Print ###
             value = math.floor(value*100000)/100000
-            print('{},{}{}'.format(timeMs, value, unit))
+            
+            
             # PWM OUTPUT: put the code here that will alter the pulse width to indicate load cell output.
-
+            value_u16 = round((value/100) * 65534)
+            if value_u16 < 0:
+                value_u16 = 0
+            pwm_obj.duty_u16(value_u16)
+            print('{},{}{} {}'.format(timeMs, value, unit, value_u16))
             
             ### Write to File if recording  ###
             if (isRecording == True and isSDconnected):
