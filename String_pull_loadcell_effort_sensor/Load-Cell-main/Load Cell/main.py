@@ -18,7 +18,8 @@ cs = machine.Pin(13, machine.Pin.OUT)
 
 # PWM pin - put code for defining PWM pin here. Don't trust my code.
 pwm_pin = machine.Pin(9, machine.Pin.OUT)
-pwm_obj = PWM(pwm_pin, 10)
+pwm_obj = PWM(pwm_pin, 100)
+
 
 
 # Intialize SPI peripheral (start with 1 MHz)
@@ -124,8 +125,9 @@ def main():
     
 
     # Initial Tare
-    hx711.tare()
-    tareVal = hx711.read()
+    #hx711.tare()
+    tareVal = hx711.read_average(10)
+    #tareVal = hx711.read()
     
 
     # MAIN Loop
@@ -137,9 +139,10 @@ def main():
         if poll_obj.poll(0):
             
             # Read one character from sys.stdin
-            command = sys.stdin.read(1)
-            command = command.strip()
-            print(command)  # Used as a confirmation response to GUI commands
+#             command = sys.stdin.read(1)
+#             command = command.strip()
+#             print(command)  # Used as a confirmation response to GUI commands
+            command = False
             
             if command:
                 if command == "r":  # Record
@@ -197,7 +200,7 @@ def main():
             
             
             # PWM OUTPUT: put the code here that will alter the pulse width to indicate load cell output.
-            value_u16 = round((value/100) * 65534)
+            value_u16 = round((value/200) * 65534)
             if value_u16 < 0:
                 value_u16 = 0
             pwm_obj.duty_u16(value_u16)
